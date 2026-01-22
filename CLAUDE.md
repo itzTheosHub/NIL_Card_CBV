@@ -57,6 +57,7 @@ This file tracks project progress for continuity across Claude sessions.
   - Clickable logo linking to home
   - Error clears when user starts typing
 - Set up Supabase: created lib/supabase.ts client, configured .env.local
+- Committed and pushed to GitHub (master branch)
 
 **2025-01-16**
 - Started landing page (app/page.tsx)
