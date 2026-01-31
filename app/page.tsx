@@ -13,7 +13,14 @@ export default function HomePage() {
             alt="NIL Card logo"
             width={250}
             height={120}
-            className="h-28 w-auto -my-7"
+            className="h-20 w-auto dark:hidden"
+          />
+          <Image
+            src="/logo-dark.png"
+            alt="NIL Card logo"
+            width={250}
+            height={120}
+            className="h-28 w-auto hidden dark:block"
           />
         <div className="flex gap-3">
           <Link

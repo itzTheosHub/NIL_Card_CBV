@@ -92,7 +92,7 @@ export default function LoginPage() {
                             <div className="border-t border-zinc-300 dark:border-zinc-600 my-6"></div>
                             <div className="text-center">
                                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-                                    Don't have an account?
+                                    Don&#39;t have an account?
                                 </p>
                                 <Link
                                     href="/signup"
