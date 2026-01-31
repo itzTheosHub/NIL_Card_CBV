@@ -111,13 +111,13 @@ export default function DemoPage() {
                         <div className="flex items-center justify-center gap-1.5 text-zinc-500 dark:text-zinc-300 mt-1">
                             <span>Junior</span>
                             <span>•</span>
-                            <span>Men's Basketball</span>
+                            <span>Men&#39;s Basketball</span>
                             <span>•</span>
                             <span>Division I</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5 text-zinc-500 dark:text-zinc-300 mt-1">
                             <GraduationCap className="w-4 h-4 text-violet-500"/>
-                                <span>University of Cincinnati '27</span>
+                                <span>University of Cincinnati &#39;27</span>
                         </div>
 
                         {/* Stats Grid */}
