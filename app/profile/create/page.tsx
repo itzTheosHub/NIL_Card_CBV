@@ -35,7 +35,6 @@ function formatFollowers(num: number): string {
 export default function CreateProfilePage() {
   const [formData, setFormData] = useState({
     fullName: "",
-    email: "",
     bio: "",
     school: "",
     sport: "",
@@ -135,18 +134,26 @@ export default function CreateProfilePage() {
       <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
         {/* Header */}
         <header className="border-b border-zinc-200 bg-[rgb(252,253,255)] dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="flex items-center justify-between px-6 py-2">
-            <Link href="/">
-              <Image
-                src="/logo.png"
-                alt="NIL Card logo"
-                width={220}
-                height={120}
-                className="h-28 w-auto -my-7"
-              />
-            </Link>
-          </div>
-        </header>
+                <div className="flex items-center justify-between px-6 py-2">
+                <Link href="/">
+                  <Image
+                    src="/logo.png"
+                    alt="NIL Card logo"
+                    width={220}
+                    height={120}
+                    className="h-20 w-auto dark:hidden"
+                  />
+                  {/* Dark Mode Logo */}
+                  <Image
+                    src="/logo-dark.png"
+                    alt="NIL Card logo"
+                    width={220}
+                    height={120}
+                    className="h-20 w-auto hidden dark:block"
+                  />
+                </Link>
+                  </div>
+            </header>
 
         <main className="flex-1 flex justify-center px-4 py-8">
           <div className="w-full max-w-2xl">
@@ -547,7 +554,7 @@ export default function CreateProfilePage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full font-semibold text-white bg-gradient-to-r from-violet-600 to-blue-500/90 hover:from-violet-700 hover:to-blue-600 shadow-xl shadow-violet-500/40 hover:-translate-y-0.5 hover:scale-[1.02] transition-all duration-300"
+                className="w-full font-semibold text-white bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 shadow-xl shadow-violet-500/40 hover:-translate-y-0.5 hover:scale-[1.02] transition-all duration-300"
                 size="lg"
               >
                 {loading ? "Generating..." : "Generate My NIL Card →"}
@@ -559,6 +566,35 @@ export default function CreateProfilePage() {
             </form>
           </div>
         </main>
+
+         {/* Footer */}
+          <footer className="border-t border-zinc-200 bg-zinc-50 py-8 px-4 dark:border-zinc-800 dark:bg-zinc-950">
+            <div className="mx-auto max-w-4xl flex flex-col items-center justify-between gap-4 sm:flex-row">
+              <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                © 2025 NIL Card. All rights reserved.
+              </span>
+              <div className="flex gap-6">
+                <Link
+                  href="/privacy"
+                  className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/terms"
+                  className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                >
+                  Terms
+                </Link>
+                <Link
+                  href="/contact"
+                  className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                >
+                  Contact
+                </Link>
+              </div>
+            </div>
+          </footer>
       </div>
     </TooltipProvider>
   )

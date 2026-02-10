@@ -4,6 +4,8 @@ import { useState } from "react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import Image from "next/image"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 export default function SignUpPage() {
     const [email, setEmail] = useState("")
@@ -48,7 +50,15 @@ export default function SignUpPage() {
                     alt="NIL Card logo"
                     width={220}
                     height={120}
-                    className="h-28 w-auto -my-7"
+                    className="h-20 w-auto dark:hidden"
+                  />
+                  {/* Dark Mode Logo */}
+                  <Image
+                    src="/logo-dark.png"
+                    alt="NIL Card logo"
+                    width={220}
+                    height={120}
+                    className="h-20 w-auto hidden dark:block"
                   />
                 </Link>
                   </div>
@@ -69,8 +79,7 @@ export default function SignUpPage() {
                     ) : (
                         <>
                             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                                <input
-                                    className="w-full px-4 py-2 border border-zinc-300 shadow-md rounded-md text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100"
+                                <Input
                                     type="email"
                                     placeholder="Email"
                                     value={email}
@@ -80,8 +89,7 @@ export default function SignUpPage() {
                                     }}
                                     required
                                 />
-                                <input
-                                    className="w-full px-4 py-2 border border-zinc-300 shadow-md rounded-md text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100"
+                                <Input
                                     type="password"
                                     placeholder="Password"
                                     value={password}
@@ -91,13 +99,13 @@ export default function SignUpPage() {
                                     }}
                                     required
                                 />
-                                <button
+                                <Button
                                     type="submit"
                                     disabled={loading}
                                     className="w-full py-2 rounded-md bg-gradient-to-r from-violet-600 to-blue-500 text-white font-medium hover:from-violet-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? "Signing up..." : "Sign Up"}
-                                </button>
+                                </Button>
                                 {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
                             </form>
                             <div className="border-t border-zinc-300 dark:border-zinc-600 my-6"></div>

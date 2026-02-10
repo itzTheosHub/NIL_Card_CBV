@@ -19,6 +19,7 @@ This file tracks project progress for continuity across Claude sessions.
 ### Next Up
 - Profile creation form
 - Test responsive behavior
+- Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
 - Start Phase 2: Data Model & Validation
 
 ---
