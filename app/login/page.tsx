@@ -13,6 +13,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    
 
     const router = useRouter()
     const supabase = createClient()
@@ -29,8 +30,18 @@ export default function LoginPage() {
         }
         else{
             console.log("Submitted")
-            router.push("/athlete/demo")
-
+            
+            const { data: profile, error: profileError } = await supabase.from("profiles").select("id").eq("id", data.user.id).single()
+            if (profile){
+                
+                // sends user to their specific profile
+                router.push(`/profile/${profile.id}`)
+            }
+            else
+            {
+                // Sends user to create a profile
+                router.push("/profile/create")
+            }
         }
         setLoading(false) 
     }

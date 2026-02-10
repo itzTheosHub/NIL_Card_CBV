@@ -4,23 +4,34 @@ This file tracks project progress for continuity across Claude sessions.
 
 ---
 
-## Current Phase: 1 — Static UI
+## Current Phase: 3 — Create Profile (POST)
 
 **Status:** In Progress
 
 ### Completed
 - [x] Landing page (header, hero, How It Works, footer)
-- [x] Signup page (styled, Supabase auth integrated)
-- [x] Login page (styled, Supabase auth, redirects to /athlete/demo)
+- [x] Signup page (styled, Supabase auth, shadcn Input/Button)
+- [x] Login page (styled, Supabase auth, shadcn Input/Button)
 - [x] Static athlete profile page (app/athlete/demo/page.tsx)
-- [ ] Profile creation form (no backend)
-- [ ] Responsive styling
+- [x] Profile creation form (static, shadcn UI components)
+- [x] Dark mode logo swap on all pages
+- [x] UI consistency fixes (gradients, footer, unused state)
+- [x] Supabase schema: profiles, social_links, content_tags, deliverables, profile_content_tags, profile_deliverables
 
-### Next Up
-- Profile creation form
-- Test responsive behavior
+### In Progress
+- Auth routing (login → check profile → route to create or view)
+- Wire up create form POST to Supabase
+
+### Remaining
+- Responsive styling
 - Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
-- Start Phase 2: Data Model & Validation
+
+### Form ↔ DB alignment notes
+- Form `school` → DB `university`
+- Form social `username` → DB `url`
+- `email` — pull from auth session, not form
+- `graduation_year` — form sends string, DB expects int4
+- Missing from form: `profile_photo_url`, `year_in_school`, `is_available`
 
 ---
 
@@ -29,12 +40,16 @@ This file tracks project progress for continuity across Claude sessions.
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Scaffold & CI | 🟡 Mostly Done (CI needs debug) |
-| 1 | Static UI | 🟡 In Progress |
-| 2 | Data Model & Validation | ⬜ Not Started |
-| 3 | Create Profile (POST) | ⬜ Not Started |
+| 1 | Static UI | ✅ Done |
+| 2 | Data Model & Validation | ✅ Done (Supabase tables created) |
+| 3 | Create Profile (POST) | 🟡 In Progress |
 | 4 | Fetch Profile (GET) | ⬜ Not Started |
 | 5 | Edit Profile (PATCH) | ⬜ Not Started |
 | 6 | Polish & Production | ⬜ Not Started |
+
+### Phase 6 Notes
+- Extract shared footer into `layout.tsx` (identical across all pages)
+- Extract shared header into `components/Header.tsx` with props for nav link variations (landing page has Sign in + Get Started, other pages don't)
 
 ---
 

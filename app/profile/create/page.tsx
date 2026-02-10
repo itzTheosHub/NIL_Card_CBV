@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { createClient } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
 import {
   Tooltip,
   TooltipContent,
@@ -118,15 +120,105 @@ export default function CreateProfilePage() {
     setSocialLinks(socialLinks.filter((_, i) => i !== index))
   }
 
+  // Supabase client
+  const supabase = createClient()
+  const router = useRouter()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted", {
-      ...formData,
-      socialLinks,
-      totalFollowers,
-      selectedTags,
-      selectedDeliverables
-    })
+    
+    setLoading(true)
+    const {data: { user }} = await supabase.auth.getUser()  
+    
+  const {error: insertError} = await supabase.from("profiles").insert(
+    {id: user?.id, email: user?.email, full_name: formData.fullName, bio: formData.bio,
+    university: formData.school, sport: formData.sport, graduation_year: parseInt(formData.gradYear), 
+    division: formData.division, engagement_rate: parseFloat(formData.engagementRate), avg_views: parseInt(formData.avgViews), 
+    total_followers: totalFollowers})
+
+
+    if (insertError)
+    {
+      setError(insertError.message)
+      console.log("An Error has occured")
+    }
+    else
+    {
+      // Mapping the socialLinks array to math the DB column names
+      const {error: socialLinksError } = await supabase.from("social_links").insert(
+        socialLinks.map(link => ({
+          profile_id: user?.id,
+          platform: link.platform,
+          url: link.username,
+          follower_count: link.followers
+        }))
+      )
+        
+        if(socialLinksError)
+        {
+            setError(socialLinksError.message)
+            return
+        }
+
+        // For each tag in selectedTags, insert it into content_tags (if it doesn't already exist) and get back the ID: 
+        const {data: tagRows } = await supabase.from("content_tags").upsert(
+          selectedTags.map(tag => ({ name: tag })),
+          { onConflict: "name"}
+        ).select("id")
+
+        if(!tagRows)
+        {
+          setError("Failed to save content tags")
+          return
+        }
+
+        // Insert junction rows into profile_content_tags
+        const {error : tagLinkError } = await supabase.from("profile_content_tags").insert(
+          tagRows.map(row => ({
+            profile_id: user?.id,
+            tag_id: row.id,
+          }))
+        )
+
+        if (tagLinkError)
+        {
+          setError(tagLinkError.message)  
+          return
+        }
+
+        // deliverables + profile_deliverables
+        const { data: deliverablesRows } = await supabase.from("deliverables").upsert(
+          selectedDeliverables.map(tag => ({ name: tag})),
+          { onConflict: "name"}
+        ).select("id")
+
+        if(!deliverablesRows)
+        {
+          setError("Failed to save deliverable")
+          return
+        }
+
+        const { error : deliverableError} = await supabase.from("profile_deliverables").insert(
+          deliverablesRows.map(row => ({ 
+            profile_id: user?.id,
+            deliverable_id: row.id,
+
+          }))
+        )
+
+        if (deliverableError)
+        {
+          setError(deliverableError.message)
+          return
+
+        }
+        // Route to user's profile
+       router.push(`/profile/${user?.id}`)
+      }
+      
+    
+    setLoading(false)
+
   }
 
   return (
