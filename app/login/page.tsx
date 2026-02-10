@@ -5,12 +5,15 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    
 
     const router = useRouter()
     const supabase = createClient()
@@ -27,8 +30,18 @@ export default function LoginPage() {
         }
         else{
             console.log("Submitted")
-            router.push("/athlete/demo")
-
+            
+            const { data: profile, error: profileError } = await supabase.from("profiles").select("id").eq("id", data.user.id).single()
+            if (profile){
+                
+                // sends user to their specific profile
+                router.push(`/profile/${profile.id}`)
+            }
+            else
+            {
+                // Sends user to create a profile
+                router.push("/profile/create")
+            }
         }
         setLoading(false) 
     }
@@ -44,7 +57,15 @@ export default function LoginPage() {
                     alt="NIL Card logo"
                     width={220}
                     height={120}
-                    className="h-28 w-auto -my-7"
+                    className="h-20 w-auto dark:hidden"
+                  />
+                  {/* Dark Mode Logo */}
+                  <Image
+                    src="/logo-dark.png"
+                    alt="NIL Card logo"
+                    width={220}
+                    height={120}
+                    className="h-20 w-auto hidden dark:block"
                   />
                 </Link>
                   </div>
@@ -57,7 +78,7 @@ export default function LoginPage() {
 
                     </h1>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                            <input className="w-full px-4 py-2 border border-zinc-300 shadow-md rounded-md text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100"
+                            <Input
                                 type="email"
                                 placeholder="Email"
                                 value={email}
@@ -67,8 +88,7 @@ export default function LoginPage() {
                                 }}
                                 required
                             />
-                            <input
-                                className="w-full px-4 py-2 border border-zinc-300 shadow-md rounded-md text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100"
+                            <Input
                                 type="password"
                                 placeholder="Password"
                                 value={password}
@@ -78,13 +98,13 @@ export default function LoginPage() {
                                 }}
                                 required
                                 />
-                                <button 
+                                <Button 
                                     type="submit"
                                     disabled={loading}
                                     className="w-full py-2 rounded-md bg-gradient-to-r from-violet-600 to-blue-500 text-white font-medium hover:from-violet-700 hover:to-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? "Logging in..." : "Login"}
-                                </button>
+                                </Button>
                                 {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
                         </form>
 
@@ -92,7 +112,7 @@ export default function LoginPage() {
                             <div className="border-t border-zinc-300 dark:border-zinc-600 my-6"></div>
                             <div className="text-center">
                                 <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
-                                    Don't have an account?
+                                    Don&#39;t have an account?
                                 </p>
                                 <Link
                                     href="/signup"
