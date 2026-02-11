@@ -4,7 +4,7 @@ This file tracks project progress for continuity across Claude sessions.
 
 ---
 
-## Current Phase: 3 — Create Profile (POST)
+## Current Phase: 4 — Fetch Profile (GET)
 
 **Status:** In Progress
 
@@ -17,10 +17,11 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Dark mode logo swap on all pages
 - [x] UI consistency fixes (gradients, footer, unused state)
 - [x] Supabase schema: profiles, social_links, content_tags, deliverables, profile_content_tags, profile_deliverables
+- [x] Login routing: check profile exists → route to /profile/[id] or /profile/create
+- [x] Create form POST: inserts into profiles, social_links, content_tags, deliverables + junction tables
 
 ### In Progress
-- Auth routing (login → check profile → route to create or view)
-- Wire up create form POST to Supabase
+- Build profile view page (`/profile/[id]`) so redirect has somewhere to land
 
 ### Remaining
 - Responsive styling
@@ -42,8 +43,8 @@ This file tracks project progress for continuity across Claude sessions.
 | 0 | Scaffold & CI | 🟡 Mostly Done (CI needs debug) |
 | 1 | Static UI | ✅ Done |
 | 2 | Data Model & Validation | ✅ Done (Supabase tables created) |
-| 3 | Create Profile (POST) | 🟡 In Progress |
-| 4 | Fetch Profile (GET) | ⬜ Not Started |
+| 3 | Create Profile (POST) | ✅ Done |
+| 4 | Fetch Profile (GET) | 🟡 In Progress |
 | 5 | Edit Profile (PATCH) | ⬜ Not Started |
 | 6 | Polish & Production | ⬜ Not Started |
 
@@ -64,6 +65,20 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2025-02-09**
+- Migrated signup/login to shadcn Input/Button components
+- Added dark mode logo swap to signup, login, and create form headers
+- Fixed UI inconsistencies (button gradient opacity, footer on create form, unused email state)
+- Login routing: after auth, queries profiles table → routes to /profile/[id] or /profile/create
+- Create form POST: full Supabase integration
+  - Inserts into profiles (mapped form fields to DB columns)
+  - Inserts social_links via .map() array transform
+  - Upserts content_tags (onConflict: "name") → inserts profile_content_tags junction rows
+  - Upserts deliverables → inserts profile_deliverables junction rows
+  - Error handling with return on each step, redirect on success
+- Learned: destructuring with renaming, optional chaining (?.), .map() for array transforms, junction tables, useState vs API responses
+- Updated CLAUDE.md: Phase 3 complete, Phase 4 in progress
 
 **2025-01-31**
 - Completed athlete demo profile page (app/athlete/demo/page.tsx):
