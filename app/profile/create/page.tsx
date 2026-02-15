@@ -64,7 +64,7 @@ export default function CreateProfilePage() {
 
   const availableDeliverables = [
     "Instagram Post", "Instagram Story", "Instagram Reel",
-    "TikTok Video", "Tweet", "YouTube Video", "YouTube Short", "Appearance"
+    "TikTok Video", "Tweet", "YouTube Video", "Product Review or Unboxing", "Social Media Takeover","Appearance", "Ambassador"
   ]
 
   // Toggle tag selection
@@ -129,12 +129,15 @@ export default function CreateProfilePage() {
     
     setLoading(true)
     const {data: { user }} = await supabase.auth.getUser()  
+    console.log("User: ", user, "Id: ", user?.id)
     
   const {error: insertError} = await supabase.from("profiles").insert(
     {id: user?.id, email: user?.email, full_name: formData.fullName, bio: formData.bio,
     university: formData.school, sport: formData.sport, graduation_year: parseInt(formData.gradYear), 
     division: formData.division, engagement_rate: parseFloat(formData.engagementRate), avg_views: parseInt(formData.avgViews), 
     total_followers: totalFollowers})
+
+    console.log("Insert Error: ", insertError)
 
 
     if (insertError)
@@ -153,18 +156,19 @@ export default function CreateProfilePage() {
           follower_count: link.followers
         }))
       )
+      console.log("SocialLinks Error: ", socialLinksError)
         
         if(socialLinksError)
         {
             setError(socialLinksError.message)
             return
         }
-
         // For each tag in selectedTags, insert it into content_tags (if it doesn't already exist) and get back the ID: 
         const {data: tagRows } = await supabase.from("content_tags").upsert(
           selectedTags.map(tag => ({ name: tag })),
           { onConflict: "name"}
         ).select("id")
+        console.log("Content Tags: ", tagRows)
 
         if(!tagRows)
         {
@@ -179,7 +183,7 @@ export default function CreateProfilePage() {
             tag_id: row.id,
           }))
         )
-
+        console.log("Profile_content_tags: ", tagLinkError)
         if (tagLinkError)
         {
           setError(tagLinkError.message)  
@@ -192,6 +196,7 @@ export default function CreateProfilePage() {
           { onConflict: "name"}
         ).select("id")
 
+        console.log("Deliverables: ", deliverablesRows)
         if(!deliverablesRows)
         {
           setError("Failed to save deliverable")
@@ -205,7 +210,7 @@ export default function CreateProfilePage() {
 
           }))
         )
-
+        console.log("Deliverables Error: ", deliverableError)
         if (deliverableError)
         {
           setError(deliverableError.message)
