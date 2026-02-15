@@ -19,13 +19,23 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Supabase schema: profiles, social_links, content_tags, deliverables, profile_content_tags, profile_deliverables
 - [x] Login routing: check profile exists → route to /profile/[id] or /profile/create
 - [x] Create form POST: inserts into profiles, social_links, content_tags, deliverables + junction tables
+- [x] Profile view page (`/profile/[id]`): server component, fetches all data from Supabase
+- [x] Dynamic social links with platform-specific styling (Instagram/TikTok/X/fallback)
+- [x] Dynamic content tags from profile_content_tags junction table
+- [x] Dynamic deliverables with icon mapping from iconMap object
+- [x] Default profile photo fallback (initials on gradient circle when no photo)
+- [x] Clickable social links (constructs full URL from username per platform)
+- [x] Fixed missing foreign keys on profile_deliverables and profile_content_tags tables
+- [x] Added UPDATE RLS policies on content_tags and deliverables for upsert support
+- [x] CI fix: Node 20, Supabase env secrets
 
 ### In Progress
-- Build profile view page (`/profile/[id]`) so redirect has somewhere to land
+- Testing and bug fixes
 
 ### Remaining
 - Responsive styling
 - Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
+- Profile photo upload (currently no photo upload in create form)
 
 ### Form ↔ DB alignment notes
 - Form `school` → DB `university`
@@ -40,7 +50,7 @@ This file tracks project progress for continuity across Claude sessions.
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 0 | Scaffold & CI | 🟡 Mostly Done (CI needs debug) |
+| 0 | Scaffold & CI | ✅ Done |
 | 1 | Static UI | ✅ Done |
 | 2 | Data Model & Validation | ✅ Done (Supabase tables created) |
 | 3 | Create Profile (POST) | ✅ Done |
@@ -51,6 +61,9 @@ This file tracks project progress for continuity across Claude sessions.
 ### Phase 6 Notes
 - Extract shared footer into `layout.tsx` (identical across all pages)
 - Extract shared header into `components/Header.tsx` with props for nav link variations (landing page has Sign in + Get Started, other pages don't)
+- Add `username`/`slug` column to profiles for cleaner URLs (e.g., `/profile/theo-colosimo` instead of UUID)
+- Profile photo upload via Supabase Storage
+- Remove debug `console.log` statements from create form and profile view page
 
 ---
 
@@ -65,6 +78,23 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2025-02-09 (continued)**
+- Built profile view page (app/profile/[id]/page.tsx):
+  - Server component (no "use client"), async function with await params
+  - Fetches profiles, social_links, profile_content_tags (with join), profile_deliverables (with join)
+  - Platform-specific social link styling using if/else in .map() with curly braces
+  - Deliverable icon mapping using iconMap object with keyof typeof cast
+  - Default profile photo: initials fallback using .split(" ").map().join("")
+  - Clickable social links: constructs full URLs from username (instagram.com/, tiktok.com/@, x.com/)
+- Fixed Supabase issues:
+  - Missing FK on profile_deliverables (deliverable_id → deliverables.id) — added via ALTER TABLE
+  - Missing FK on profile_content_tags (tag_id → content_tags.id) — added via ALTER TABLE
+  - Schema cache refresh: NOTIFY pgrst, 'reload schema'
+  - Added UPDATE policies on content_tags and deliverables for upsert support
+  - Fixed "university" column spelling in profiles table
+- Added debug console.log statements to create form handleSubmit (to remove in Phase 6)
+- Learned: TypeScript keyof typeof, as keyword for type casting, target="_blank" + rel="noopener noreferrer", PostgREST schema cache, FK relationships for Supabase joins
 
 **2025-02-09**
 - Migrated signup/login to shadcn Input/Button components
