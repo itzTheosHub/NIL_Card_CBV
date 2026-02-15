@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Eye, Users, TrendingUp, Camera, Video,
-        Package, Calendar, Award, Share2, BadgeCheck, GraduationCap, ExternalLink, ImagePlus, ImagePlay, MessageSquareQuote, Youtube, circleUser } from "lucide-react"
+        Package, Calendar, Award, Share2, BadgeCheck, GraduationCap, ExternalLink, ImagePlus, ImagePlay, MessageSquareQuote, Youtube } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 
 function formatNumber(num:number) : string {
