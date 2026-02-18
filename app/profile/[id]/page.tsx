@@ -251,7 +251,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                                 key={tag.tag_id}
                                 className="px-3 py-1 rounded-full bg-linear-to-r from-violet-600 to-blue-500 text-white text-sm font-medium hover:from-violet-700 hover:to-blue-600 hover:scale-105 transition-all cursor-pointer"
                             >
-                                {tag.content_tags.name}
+                                {(tag.content_tags as any)?.name}
                             </span>
                         ))}
                     </div>
@@ -269,7 +269,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                     <div className="grid grid-cols-1 gap-2">
                         
                         {deliverables?.map((deliverable) => {
-                            const name = deliverable.deliverables?.name
+                            const name = (deliverable.deliverables as any)?.name
                             const Icon = iconMap[name as keyof typeof iconMap] || Package
                             return (
                                 <div key={deliverable.deliverable_id} className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-purple-50 hover:border-purple-200 transition-colors dark:hover:bg-purple-900/20 dark:bg-zinc-800 dark:border-zinc-700">
