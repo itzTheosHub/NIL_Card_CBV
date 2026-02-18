@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Eye, Users, TrendingUp, Camera, Video,
         Package, Calendar, Award, Share2, BadgeCheck, GraduationCap, ExternalLink, ImagePlus, ImagePlay, MessageSquareQuote, Youtube } from "lucide-react"
 import { createClient } from "@/lib/supabase"
+import ContactSection  from "./ContactSection"
 
 function formatNumber(num:number) : string {
     if ( num >= 1000000){
@@ -268,7 +269,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                     <div className="grid grid-cols-1 gap-2">
                         
                         {deliverables?.map((deliverable) => {
-                            const name = deliverable.deliverables.name
+                            const name = deliverable.deliverables?.name
                             const Icon = iconMap[name as keyof typeof iconMap] || Package
                             return (
                                 <div key={deliverable.deliverable_id} className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-purple-50 hover:border-purple-200 transition-colors dark:hover:bg-purple-900/20 dark:bg-zinc-800 dark:border-zinc-700">
@@ -286,11 +287,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                 </div>
 
                 {/* Buttons */}
-                <div className="mt-6 space-y-3">
-                    <button className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 text-white font-semibold shadow-xl hover:shadow-xl transition-all shadow-violet-500/40 hover:-translate-y-0.5 hover:scale-[1.02] duration-300">
-                            Contact for Partnership Opportunities
-                    </button>
-                </div>
+                <ContactSection email = {profile?.email} name = {profile?.full_name} />
             </main>
         </div>
     )
