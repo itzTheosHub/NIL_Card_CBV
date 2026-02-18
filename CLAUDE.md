@@ -29,6 +29,14 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Added UPDATE RLS policies on content_tags and deliverables for upsert support
 - [x] CI fix: Node 20, Supabase env secrets
 
+- [x] Contact section: ContactSection client component with modal form (app/profile/[id]/ContactSection.tsx)
+- [x] Email integration: API route (/api/contact/route.ts) using Resend to send emails to athletes
+- [x] Contact form: sender email, subject, message fields with replyTo support
+- [x] Success toast notification with green styling and bounce animation
+- [x] Fixed TypeScript build errors: Supabase join types cast with `as any` for content_tags and deliverables
+- [x] Added RESEND_API_KEY to Vercel environment variables
+- [x] Vercel build passing
+
 ### In Progress
 - Testing and bug fixes
 
@@ -59,6 +67,8 @@ This file tracks project progress for continuity across Claude sessions.
 | 6 | Polish & Production | ⬜ Not Started |
 
 ### Phase 6 Notes
+- Verify domain with Resend and replace `onboarding@resend.dev` with custom sender
+- Add `RESEND_API_KEY` to Vercel environment variables
 - Extract shared footer into `layout.tsx` (identical across all pages)
 - Extract shared header into `components/Header.tsx` with props for nav link variations (landing page has Sign in + Get Started, other pages don't)
 - Add `username`/`slug` column to profiles for cleaner URLs (e.g., `/profile/theo-colosimo` instead of UUID)
@@ -70,7 +80,7 @@ This file tracks project progress for continuity across Claude sessions.
 ## Decisions & Notes
 
 - **Branch:** Using `master` (not `main`) - may reconcile later
-- **Tech:** Next.js 16, Tailwind CSS v4, Supabase, Vercel, TypeScript
+- **Tech:** Next.js 16, Tailwind CSS v4, Supabase, Vercel, TypeScript, Resend (email)
 - **Gradients:** Using purple → blue (`from-violet-600 to-blue-500`) consistently
 - **Icons:** Using lucide-react for all icons
 - **Dark mode:** Full support with `dark:` variants throughout
@@ -78,6 +88,23 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2026-02-18**
+- Built ContactSection client component (app/profile/[id]/ContactSection.tsx):
+  - Typed props (ContactProps: email, name) passed from server component
+  - useState hooks for isOpen, subject, message, senderEmail, showSuccess
+  - Modal with backdrop, stopPropagation to prevent close on card click
+  - Form: sender email input, subject input, message textarea
+  - handleSend: async fetch to /api/contact POST route with JSON body
+  - Success toast: fixed top-center, green styling, CircleCheck icon, animate-bounce, auto-dismiss with setTimeout
+- Built API route (app/api/contact/route.ts):
+  - Resend integration for sending emails
+  - from: onboarding@resend.dev (test sender), replyTo: visitor's email
+  - try/catch error handling, NextResponse.json responses
+- Replaced static button in page.tsx with <ContactSection /> component
+- Fixed TypeScript build errors: Supabase join types (content_tags, deliverables) typed as arrays but return single objects at runtime — used `as any` cast to fix
+- Added RESEND_API_KEY to Vercel env vars, confirmed build passes
+- Learned: React props vs state, TypeScript type definitions, mailto: limitations, email API services (Resend), fetch with POST/JSON, conditional rendering patterns, toast notifications, event propagation (stopPropagation), camelCase in SDK APIs (replyTo not reply_to), `as any` type assertion for Supabase join type mismatches
 
 **2025-02-09 (continued)**
 - Built profile view page (app/profile/[id]/page.tsx):
