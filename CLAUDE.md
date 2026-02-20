@@ -4,9 +4,9 @@ This file tracks project progress for continuity across Claude sessions.
 
 ---
 
-## Current Phase: 4 — Fetch Profile (GET)
+## Current Phase: 6 — Polish & Production
 
-**Status:** In Progress
+**Status:** Not Started
 
 ### Completed
 - [x] Landing page (header, hero, How It Works, footer)
@@ -37,8 +37,14 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Added RESEND_API_KEY to Vercel environment variables
 - [x] Vercel build passing
 
-### In Progress
-- Testing and bug fixes
+- [x] Shared ProfileForm component (components/ProfileForm.tsx) — extracted from create page, accepts props for initial data, onSubmit, labels
+- [x] Refactored create page to use ProfileForm (app/profile/create/page.tsx)
+- [x] EditProfileButton component (app/profile/[id]/EditProfileButton.tsx) — auth-gated, checks user ownership via getUser()
+- [x] Edit profile page (app/profile/[id]/edit/page.tsx) — fetches existing data, transforms DB→form shape, UPDATE + delete/reinsert junction rows
+- [x] Header with logo + EditProfileButton on profile view page
+- [x] Footer on profile view page
+- [x] Fixed deliverable iconMap keys to match form names (YouTube Video, Appearance, Ambassador)
+- [x] Added DELETE RLS policies on social_links, profile_content_tags, profile_deliverables
 
 ### Remaining
 - Responsive styling
@@ -62,8 +68,8 @@ This file tracks project progress for continuity across Claude sessions.
 | 1 | Static UI | ✅ Done |
 | 2 | Data Model & Validation | ✅ Done (Supabase tables created) |
 | 3 | Create Profile (POST) | ✅ Done |
-| 4 | Fetch Profile (GET) | 🟡 In Progress |
-| 5 | Edit Profile (PATCH) | ⬜ Not Started |
+| 4 | Fetch Profile (GET) | ✅ Done |
+| 5 | Edit Profile (PATCH) | ✅ Done |
 | 6 | Polish & Production | ⬜ Not Started |
 
 ### Phase 6 Notes
@@ -88,6 +94,25 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2026-02-20**
+- Phase 5: Edit Profile (PATCH) — complete
+- Extracted shared ProfileForm component (components/ProfileForm.tsx):
+  - Props: initialFormData, initialSocialLinks, initialTags, initialDeliverables, onSubmit, submitLabel, loadingLabel, pageTitle, pageSubtitle
+  - All form state initializes from props with ?? fallback defaults
+  - handleSubmit wraps onSubmit in try/catch for error display
+- Refactored create page to use ProfileForm, handleCreate receives payload
+- Built EditProfileButton (app/profile/[id]/EditProfileButton.tsx):
+  - useEffect checks auth ownership via supabase.auth.getUser()
+  - Renders Link to edit page only if user.id === profileId
+- Built edit page (app/profile/[id]/edit/page.tsx):
+  - useEffect: auth check + fetch profile/social_links/tags/deliverables from Supabase
+  - Transform DB→form shape (university→school, url→username, int→string, null→"")
+  - handleEdit: UPDATE profiles, DELETE+reinsert social_links/junction rows
+  - Loading spinner with Sparkles icon while fetching
+- Added header (logo + EditProfileButton) and footer to profile view page
+- Fixed deliverable iconMap keys: YouTube Video, Appearance, Ambassador
+- Learned: useParams() for URL path segments, useState with undefined for loading distinction, async functions inside useEffect, .update().eq() for Supabase updates, delete+reinsert pattern for junction tables, throw vs new Error
 
 **2026-02-18**
 - Built ContactSection client component (app/profile/[id]/ContactSection.tsx):
