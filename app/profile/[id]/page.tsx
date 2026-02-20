@@ -4,6 +4,7 @@ import { Eye, Users, TrendingUp, Camera, Video,
         Package, Calendar, Award, Share2, BadgeCheck, GraduationCap, ExternalLink, ImagePlus, ImagePlay, MessageSquareQuote, Youtube } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import ContactSection  from "./ContactSection"
+import EditProfileButton from "./EditProfileButton"
 
 function formatNumber(num:number) : string {
     if ( num >= 1000000){
@@ -48,15 +49,38 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
         "Instagram Reel": ImagePlay,
         "TikTok Video": Video,
         "Tweet": MessageSquareQuote,
-        "Youtube Video": Youtube,
+        "YouTube Video": Youtube,
         "Product Review or Unboxing": Package,
         "Social Media Takeover": Share2,
-        "Event Appearance": Calendar,
-        "Brand Ambassador" : Award
+        "Appearance": Calendar,
+        "Ambassador" : Award
         } 
 
     return (
         <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+            {/* Header */}
+            <header className="border-b border-zinc-200 bg-[rgb(252,253,255)] dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="flex items-center justify-between px-6 py-2">
+                    <Link href="/">
+                        <Image
+                            src="/logo.png"
+                            alt="NIL Card logo"
+                            width={220}
+                            height={120}
+                            className="h-20 w-auto dark:hidden"
+                        />
+                        <Image
+                            src="/logo-dark.png"
+                            alt="NIL Card logo"
+                            width={220}
+                            height={120}
+                            className="h-20 w-auto hidden dark:block"
+                        />
+                    </Link>
+                    <EditProfileButton profileId={id} />
+                </div>
+            </header>
+
             <main className="mx-auto max-w-2xl px-4 py-8">
                 {/* Profile Card */}
                 <div className="overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
@@ -181,7 +205,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                                     iconBg = "bg-black"
                                     label = "TikTok"
                                     hoverColor = "group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
-                                    linkUrl = `https://tiktok.com/${link.url}`
+                                    linkUrl = `https://tiktok.com/@${link.url}`
                                     iconSvg = (
                                         <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
@@ -287,8 +311,28 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                 </div>
 
                 {/* Buttons */}
-                <ContactSection email = {profile?.email} name = {profile?.full_name} />
+                <ContactSection email={profile?.email} name={profile?.full_name} />
             </main>
+
+            {/* Footer */}
+            <footer className="border-t border-zinc-200 bg-zinc-50 py-8 px-4 dark:border-zinc-800 dark:bg-zinc-950">
+                <div className="mx-auto max-w-4xl flex flex-col items-center justify-between gap-4 sm:flex-row">
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                        © 2026 NIL Card. All rights reserved.
+                    </span>
+                    <div className="flex gap-6">
+                        <Link href="/privacy" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                            Privacy
+                        </Link>
+                        <Link href="/terms" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                            Terms
+                        </Link>
+                        <Link href="/contact" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+                            Contact
+                        </Link>
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }

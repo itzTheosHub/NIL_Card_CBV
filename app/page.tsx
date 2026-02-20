@@ -123,7 +123,7 @@ export default function HomePage() {
           <footer className="border-t border-zinc-200 bg-zinc-50 py-8 px-4 dark:border-zinc-800 dark:bg-zinc-950">
             <div className="mx-auto max-w-4xl flex flex-col items-center justify-between gap-4 sm:flex-row">
               <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                © 2025 NIL Card. All rights reserved.
+                © 2026 NIL Card. All rights reserved.
               </span>
               <div className="flex gap-6">
                 <Link

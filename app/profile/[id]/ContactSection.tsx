@@ -10,8 +10,6 @@ type contactProps = {
 
 export default function ContactSection({email, name}: contactProps){
 
-    
-
     const [isOpen, setIsOpen] = useState(false)
     const [subject, setSubject] = useState("")
     const [message, setMessage] = useState("")
