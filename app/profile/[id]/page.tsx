@@ -1,10 +1,10 @@
-import Link from "next/link"
 import Image from "next/image"
 import { Eye, Users, TrendingUp, Camera, Video,
         Package, Calendar, Award, Share2, BadgeCheck, GraduationCap, ExternalLink, ImagePlus, ImagePlay, MessageSquareQuote, Youtube } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import ContactSection  from "./ContactSection"
 import EditProfileButton from "./EditProfileButton"
+import Header from "@/components/Header"
 
 function formatNumber(num:number) : string {
     if ( num >= 1000000){
@@ -32,7 +32,6 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
     const { data: profileContentTags } = await supabase.from("profile_content_tags").select("tag_id, content_tags(name)").eq("profile_id", id)
     const { data: deliverables, error: deliverablesError } = await supabase.from("profile_deliverables").select("deliverable_id, deliverables(name)").eq("profile_id", id)
     
-    console.log("Deliverables data: ", deliverables, "Error: ", deliverablesError)
 
     if (!profile)
     {
@@ -58,28 +57,9 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
 
     return (
         <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
-            {/* Header */}
-            <header className="border-b border-zinc-200 bg-[rgb(252,253,255)] dark:border-zinc-800 dark:bg-zinc-900">
-                <div className="flex items-center justify-between px-6 py-2">
-                    <Link href="/">
-                        <Image
-                            src="/logo.png"
-                            alt="NIL Card logo"
-                            width={220}
-                            height={120}
-                            className="h-20 w-auto dark:hidden"
-                        />
-                        <Image
-                            src="/logo-dark.png"
-                            alt="NIL Card logo"
-                            width={220}
-                            height={120}
-                            className="h-20 w-auto hidden dark:block"
-                        />
-                    </Link>
-                    <EditProfileButton profileId={id} />
-                </div>
-            </header>
+            <Header>
+                <EditProfileButton profileId={id} />
+            </Header>
 
             <main className="mx-auto max-w-2xl px-4 py-8">
                 {/* Profile Card */}
@@ -314,25 +294,6 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
                 <ContactSection email={profile?.email} name={profile?.full_name} />
             </main>
 
-            {/* Footer */}
-            <footer className="border-t border-zinc-200 bg-zinc-50 py-8 px-4 dark:border-zinc-800 dark:bg-zinc-950">
-                <div className="mx-auto max-w-4xl flex flex-col items-center justify-between gap-4 sm:flex-row">
-                    <span className="text-sm text-zinc-600 dark:text-zinc-400">
-                        © 2026 NIL Card. All rights reserved.
-                    </span>
-                    <div className="flex gap-6">
-                        <Link href="/privacy" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-                            Privacy
-                        </Link>
-                        <Link href="/terms" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-                            Terms
-                        </Link>
-                        <Link href="/contact" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-                            Contact
-                        </Link>
-                    </div>
-                </div>
-            </footer>
         </div>
     )
 }

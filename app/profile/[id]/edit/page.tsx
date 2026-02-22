@@ -89,7 +89,6 @@ export default function EditProfilePage() {
         if (insertError)
     {
       throw new Error(insertError.message)
-      console.log("An Error has occured")
     }
     else
     {

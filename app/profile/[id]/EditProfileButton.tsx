@@ -16,7 +16,6 @@ export default function EditProfileButton({ profileId }: {profileId: string }){
         {
             const { data: { user } } = await supabase.auth.getUser()
             setOwner(user?.id === profileId)
-            console.log("Profile ID: ", user?.id)
         }
         checkOwner()
     }, [])
