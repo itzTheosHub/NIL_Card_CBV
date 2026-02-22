@@ -6,7 +6,7 @@ This file tracks project progress for continuity across Claude sessions.
 
 ## Current Phase: 6 — Polish & Production
 
-**Status:** Not Started
+**Status:** In Progress
 
 ### Completed
 - [x] Landing page (header, hero, How It Works, footer)
@@ -46,6 +46,13 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Fixed deliverable iconMap keys to match form names (YouTube Video, Appearance, Ambassador)
 - [x] Added DELETE RLS policies on social_links, profile_content_tags, profile_deliverables
 
+- [x] Removed debug console.log statements from login, signup, create, edit, profile view, EditProfileButton
+- [x] Extracted shared Header component (components/Header.tsx) with optional children prop
+- [x] Replaced inline headers across all pages with `<Header />` component
+- [x] Moved shared footer to layout.tsx, removed duplicate footers from all pages
+- [x] Cleaned up unused imports (Link, Image) after header/footer extraction
+- [x] Added responsive classes to landing page header buttons (sm: breakpoints, whitespace-nowrap)
+
 ### Remaining
 - Responsive styling
 - Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
@@ -70,16 +77,16 @@ This file tracks project progress for continuity across Claude sessions.
 | 3 | Create Profile (POST) | ✅ Done |
 | 4 | Fetch Profile (GET) | ✅ Done |
 | 5 | Edit Profile (PATCH) | ✅ Done |
-| 6 | Polish & Production | ⬜ Not Started |
+| 6 | Polish & Production | 🟡 In Progress |
 
 ### Phase 6 Notes
 - Verify domain with Resend and replace `onboarding@resend.dev` with custom sender
 - Add `RESEND_API_KEY` to Vercel environment variables
-- Extract shared footer into `layout.tsx` (identical across all pages)
-- Extract shared header into `components/Header.tsx` with props for nav link variations (landing page has Sign in + Get Started, other pages don't)
+- ~~Extract shared footer into `layout.tsx`~~ ✅ Done
+- ~~Extract shared header into `components/Header.tsx`~~ ✅ Done
 - Add `username`/`slug` column to profiles for cleaner URLs (e.g., `/profile/theo-colosimo` instead of UUID)
 - Profile photo upload via Supabase Storage
-- Remove debug `console.log` statements from create form and profile view page
+- ~~Remove debug `console.log` statements~~ ✅ Done
 
 ---
 
@@ -94,6 +101,18 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2026-02-22**
+- Phase 6: Polish & Production — started
+- Removed all debug console.log statements (login, signup, create, edit, profile view, EditProfileButton)
+- Extracted shared Header component (components/Header.tsx):
+  - Accepts optional children prop for page-specific buttons (Sign in/Get Started on landing, EditProfileButton on profile)
+  - Logo with dark mode swap, links to home
+- Replaced inline headers across all 6 pages with `<Header />` component
+- Moved shared footer to app/layout.tsx, removed duplicate footers from all pages
+- Cleaned up unused imports (Link, Image) after extraction
+- Added responsive classes to landing page (sm: breakpoints, whitespace-nowrap on hero buttons)
+- Learned: React children prop for component composition, layout.tsx for shared UI across all routes
 
 **2026-02-20**
 - Phase 5: Edit Profile (PATCH) — complete
