@@ -29,11 +29,11 @@ export default function LoginPage() {
         }
         else{
             
-            const { data: profile, error: profileError } = await supabase.from("profiles").select("id").eq("id", data.user.id).single()
+            const { data: profile, error: profileError } = await supabase.from("profiles").select("id, username").eq("id", data.user.id).single()
             if (profile){
-                
+
                 // sends user to their specific profile
-                router.push(`/profile/${profile.id}`)
+                router.push(`/profile/${profile.username}`)
             }
             else
             {

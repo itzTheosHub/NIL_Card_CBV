@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Sparkles, X, Info } from "lucide-react"
+import { useState, useRef } from "react"
+import { Sparkles, X, Info, Camera } from "lucide-react"
 import Header from "@/components/Header"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -29,7 +29,9 @@ type FormData = {
     gradYear: string,
     division: string,
     engagementRate: string,
-    avgViews: string
+    avgViews: string,
+    username: string
+    profilePhotoUrl: string,
 }
 
 type EditProfileFormProps = {
@@ -37,7 +39,7 @@ type EditProfileFormProps = {
   initialSocialLinks?: SocialLink[]
   initialTags?: string[]
   initialDeliverables?: string[]
-  onSubmit: (payload: { formData: FormData; socialLinks: SocialLink[]; tags: string[]; deliverables: string[] }) => Promise<void>
+  onSubmit: (payload: { formData: FormData; socialLinks: SocialLink[]; tags: string[]; deliverables: string[]; profilePhotoFile?: File | null;}) => Promise<void>
   submitLabel: string
   loadingLabel: string
   pageTitle: string
@@ -54,6 +56,10 @@ function formatFollowers(num: number): string {
     return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K"
   }
   return num.toString()
+}
+
+function generateSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
 }
 
 const availableTags = [
@@ -78,6 +84,8 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
     division: "",
     engagementRate: "",
     avgViews: "",
+    username: "",
+    profilePhotoUrl: "",
   })
 
   const [socialLinks, setSocialLinks] = useState(initialSocialLinks ?? [])
@@ -87,8 +95,12 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
   const [customDeliverable, setCustomDeliverable] = useState("")
   const [showCustomTagInput, setShowCustomTagInput] = useState(false)
   const [showCustomDeliverableInput, setShowCustomDeliverableInput] = useState(false)
+  const [usernameManuallyEdited, setUsernameManuallyEdited] = useState(!!initialFormData?.username)
+  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
 
   // Toggle tag selection
   const toggleTag = (tag: string) => {
@@ -109,7 +121,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
     if (customTag.trim() && !selectedTags.includes(customTag.trim())) {
       setSelectedTags(prev => [...prev, customTag.trim()])
       setCustomTag("")
-      setShowCustomTagInput(false)
+      setShowCustomTagInput(false)    
     }
   }
 
@@ -149,7 +161,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
     setLoading(true)
     try
     {
-        await onSubmit({ formData, socialLinks, tags: selectedTags, deliverables: selectedDeliverables})
+        await onSubmit({ formData, socialLinks, tags: selectedTags, deliverables: selectedDeliverables, profilePhotoFile: profilePhotoFile})
     } catch (err:any) {
         setError(err.message)
     }
@@ -182,6 +194,45 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
               <Card className= "overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                 <CardContent className="pt-6 space-y-6">
 
+                  {/*ProfilePhotUrl Field*/}
+                  <input 
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef} 
+                    onChange={(e) => setProfilePhotoFile(e.target.files?.[0] || null)} 
+                  />
+                  <div className="flex flex-col items-center gap-1.5">
+                    <div className="rounded-full bg-gradient-to-r from-violet-600 to-blue-500 p-0.5 cursor-pointer mx-auto"
+                         onClick={() => fileInputRef.current?.click()}>
+                      <div className="relative group rounded-full w-24 h-24 bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex items-center justify-center">
+                        {profilePhotoFile ? (
+                          <img src={URL.createObjectURL(profilePhotoFile)}
+                           className="w-full h-full object-cover"
+                           alt="Profile Photo"/>
+                        ): formData.profilePhotoUrl ? (
+                          <img src={formData.profilePhotoUrl}
+                           className="w-full h-full object-cover"
+                           alt="Profile Photo"
+                           />
+                        ) : (
+                          <Camera className="w-8 h-8 text-zinc-400"/>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Camera className="w-8 h-8 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-sm cursor-pointer font-semibold text-zinc-500 dark:text-zinc-400"
+                       onClick={() => fileInputRef.current?.click()}>
+                      {profilePhotoFile || formData.profilePhotoUrl ? "Change Photo" : "Upload Photo"}
+                    </p>
+                  </div>
+                  
+                      
+                  
+
+
                   {/* Basic Info Section */}
                   <div className="space-y-4">
                     <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
@@ -193,10 +244,38 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                       <Input
                         id="fullName"
                         value={formData.fullName}
-                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                        onChange={(e) => {
+                          const newName = e.target.value
+                          setFormData({
+                            ...formData,
+                            fullName: newName,
+                            ...(!usernameManuallyEdited ? {username: generateSlug(newName) } :{})
+                          })
+                        }}
                         placeholder="Maya Chen"
                         required
                       />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="username">Username *</Label>
+                      <Input
+                        id="username"
+                        value={formData.username}
+                        onChange={(e) => {
+                          setUsernameManuallyEdited(true)
+                          setFormData({
+                            ...formData,
+                            username: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") }) 
+                            
+                        }}
+                        placeholder="maya-chen"
+                      />
+                      {formData.username && (
+                        <p className="text-xs text-zinc-500">
+                          Your profile URL: nilcardcbv.vercel.app/profile/{formData.username}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-2">

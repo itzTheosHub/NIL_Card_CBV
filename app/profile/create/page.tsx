@@ -10,9 +10,22 @@ export default function CreateProfilePage() {
   const supabase = createClient()
   const router = useRouter()
 
-  const handleCreate = async (payload: {formData: any; socialLinks: any[]; tags: string[]; deliverables: string[]}) => {
-    const { formData, socialLinks, tags, deliverables} = payload
+  const handleCreate = async (payload: {formData: any; socialLinks: any[]; tags: string[]; deliverables: string[]; profilePhotoFile?: File | null;}) => {
+    const { formData, socialLinks, tags, deliverables, profilePhotoFile} = payload
     const { data: { user } } = await supabase.auth.getUser()
+
+    
+    let profilePhotoUrl: string | null = null
+
+    if(profilePhotoFile)
+    {
+      const { error: uploadError } = await supabase.storage.from("profile-images").upload(`${user?.id}/photo`, profilePhotoFile)
+      if (uploadError) {
+        throw new Error(uploadError.message)
+      }
+      const { data: photoData } = supabase.storage.from("profile-images").getPublicUrl(`${user?.id}/photo`)
+      profilePhotoUrl = photoData?.publicUrl || null
+    }
 
     // Calculate totalFollowers from socialLinks
     const totalFollowers = socialLinks.reduce((sum, link) => {
@@ -21,9 +34,16 @@ export default function CreateProfilePage() {
     
     // INSERT into profiles
     const { error: insertError } = await supabase.from("profiles").insert({
-      id: user?.id, email: user?.email, full_name: formData.fullName,
-      bio: formData.bio, university: formData.school, sport: formData.sport,
-      graduation_year: parseInt(formData.gradYear), division: formData.division,
+      id: user?.id, 
+      email: user?.email, 
+      full_name: formData.fullName,
+      username: formData.username,
+      profile_photo_url: profilePhotoUrl,
+      bio: formData.bio, 
+      university: formData.school, 
+      sport: formData.sport,
+      graduation_year: parseInt(formData.gradYear), 
+      division: formData.division,
       engagement_rate: parseFloat(formData.engagementRate),
       avg_views: parseInt(formData.avgViews), total_followers: totalFollowers
     })
@@ -34,7 +54,8 @@ export default function CreateProfilePage() {
     }
     else
     {
-      // Mapping the socialLinks array to math the DB column names
+
+      // Mapping the socialLinks array to match the DB column names
       const {error: socialLinksError } = await supabase.from("social_links").insert(
         socialLinks.map(link => ({
           profile_id: user?.id,
@@ -102,7 +123,7 @@ export default function CreateProfilePage() {
 
         }
         // Route to user's profile
-       router.push(`/profile/${user?.id}`)
+       router.push(`/profile/${formData.username}`)
       }
 
   }

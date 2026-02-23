@@ -47,6 +47,7 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Added DELETE RLS policies on social_links, profile_content_tags, profile_deliverables
 
 - [x] Removed debug console.log statements from login, signup, create, edit, profile view, EditProfileButton
+- [x] Profile photo upload — fully working on both create and edit pages
 - [x] Extracted shared Header component (components/Header.tsx) with optional children prop
 - [x] Replaced inline headers across all pages with `<Header />` component
 - [x] Moved shared footer to layout.tsx, removed duplicate footers from all pages
@@ -56,7 +57,17 @@ This file tracks project progress for continuity across Claude sessions.
 ### Remaining
 - Responsive styling
 - Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
-- Profile photo upload (currently no photo upload in create form)
+
+### Profile Photo Upload — Status ✅ Complete
+- **Supabase Storage:** `profile-images` bucket created (public), RLS policies set (INSERT/UPDATE for authenticated, SELECT for public)
+- **next.config.ts:** Added `images.remotePatterns` for Supabase domain ✅
+- **ProfileForm (components/ProfileForm.tsx):** ✅
+- **Create page:** upload → getPublicUrl → save in INSERT ✅
+- **Edit page:** fully working after three bugs fixed (see session log 2026-02-23)
+
+### Future Ideas
+- **AI Outreach Assistant:** When athletes view their own profile, provide AI-generated suggestions for DMs and messages when reaching out to brands or sharing their profile link (tone, structure, personalization tips)
+- **Local Business Marketplace:** Search engine / directory for local brands, companies, and restaurants — athletes can discover nearby businesses to pitch partnerships to, and businesses can browse athlete profiles
 
 ### Form ↔ DB alignment notes
 - Form `school` → DB `university`
@@ -85,7 +96,7 @@ This file tracks project progress for continuity across Claude sessions.
 - ~~Extract shared footer into `layout.tsx`~~ ✅ Done
 - ~~Extract shared header into `components/Header.tsx`~~ ✅ Done
 - Add `username`/`slug` column to profiles for cleaner URLs (e.g., `/profile/theo-colosimo` instead of UUID)
-- Profile photo upload via Supabase Storage
+- ~~Profile photo upload via Supabase Storage~~ ✅ Done
 - ~~Remove debug `console.log` statements~~ ✅ Done
 
 ---
@@ -101,6 +112,27 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2026-02-23**
+- Debugged and fixed profile photo upload on edit page — three separate bugs:
+  1. **Storage UPDATE policy missing** — `profile-images` bucket had INSERT but no UPDATE policy; upsert on existing file returned 400. Fixed by adding UPDATE policy for authenticated users with same folder-ownership condition
+  2. **Stale `profileId` closure** — profiles `.update()` used `profileId` state variable which was `""` due to stale closure; replaced with `user?.id` fetched fresh inside `handleEdit` (same pattern already used for junction table inserts)
+  3. **Profiles table UPDATE RLS policy set to wrong command** — policy named "Users can update own profile" was configured as SELECT instead of UPDATE, so all app-level updates silently returned 0 rows with no error. Fixed by creating correct UPDATE policy: `auth.uid() = id` for authenticated role
+- Removed debug console.log statements from edit page
+- Learned: Supabase dashboard bypasses RLS (service role key) so manual edits work even when app-level updates fail; Supabase UPDATE with 0 rows matched returns `error: null` — silent failure; Storage upsert requires separate UPDATE policy in addition to INSERT; stale closures in React state vs fresh values from async calls
+
+**2026-02-22 (continued)**
+- Profile photo upload feature — mostly complete
+- Created `profile-images` Supabase Storage bucket (public) with RLS policies
+- Added `images.remotePatterns` to next.config.ts for Supabase domain
+- Built photo upload UI in ProfileForm:
+  - Hidden file input + useRef to trigger it
+  - Circular preview with gradient ring (bg-gradient-to-r p-0.5 wrapper)
+  - Hover overlay with Camera icon (absolute, group-hover:opacity-100)
+  - Conditional rendering: profilePhotoFile → formData.profilePhotoUrl → Camera icon
+  - "Upload Photo" / "Change Photo" conditional text
+- Create page: upload to Storage → getPublicUrl → save in INSERT — working ✅
+- Learned: useRef for hidden file inputs, URL.createObjectURL for previews, Supabase Storage upload/getPublicUrl, group hover with Tailwind, bucket names must match exactly in code
 
 **2026-02-22**
 - Phase 6: Polish & Production — started

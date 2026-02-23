@@ -21,23 +21,23 @@ function formatEngagement(num:number) : string {
     return `${(num)}%`;
 }
 
-export default async function ProfilePage( {params}: { params: Promise<{ id: string }> }) {
+export default async function ProfilePage( {params}: { params: Promise<{ username: string }> }) {
 
     // Fetch data with await
     // Return JSX
     const supabase = createClient()
-    const { id } = await params
-    const { data: profile } = await supabase.from("profiles").select("*").eq("id", id).single()
-    const { data: socialLinks } = await supabase.from("social_links").select("*").eq("profile_id", id)
-    const { data: profileContentTags } = await supabase.from("profile_content_tags").select("tag_id, content_tags(name)").eq("profile_id", id)
-    const { data: deliverables, error: deliverablesError } = await supabase.from("profile_deliverables").select("deliverable_id, deliverables(name)").eq("profile_id", id)
-    
+    const { username } = await params
+    const { data: profile } = await supabase.from("profiles").select("*").eq("username", username).single()
 
     if (!profile)
     {
         return <div>Profile not found</div>
     }
 
+    const { data: socialLinks } = await supabase.from("social_links").select("*").eq("profile_id", profile.id)
+    const { data: profileContentTags } = await supabase.from("profile_content_tags").select("tag_id, content_tags(name)").eq("profile_id", profile.id)
+    const { data: deliverables, error: deliverablesError } = await supabase.from("profile_deliverables").select("deliverable_id, deliverables(name)").eq("profile_id", profile.id)
+    
     const formattedEngagement = formatEngagement(profile.engagement_rate)
     const formattedTotalFollowers = formatNumber(profile.total_followers)
     const formattedAvgViews = formatNumber(profile.avg_views)
@@ -58,7 +58,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ id: str
     return (
         <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
             <Header>
-                <EditProfileButton profileId={id} />
+                <EditProfileButton profileId={profile.id} username={username}/>
             </Header>
 
             <main className="mx-auto max-w-2xl px-4 py-8">
