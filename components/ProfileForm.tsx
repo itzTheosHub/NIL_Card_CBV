@@ -295,7 +295,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                       School Info
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-2">
                         <Label htmlFor="school">School *</Label>
                         <Input
@@ -319,7 +319,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="space-y-2">
                         <Label htmlFor="gradYear">Grad Year</Label>
                         <Input
@@ -350,8 +350,8 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
 
                     {/* Added social links */}
                     {socialLinks.map((link, index) => (
-                      <div key={index} className="flex gap-2 items-end">
-                        <div className="space-y-2 w-24">
+                      <div key={index} className="flex flex-col sm:flex-row gap-2 items-end">
+                        <div className="w-full sm:w-24 space-y-2">
                           <Label>Platform</Label>
                           <div className="h-9 px-3 flex items-center rounded-md bg-zinc-100 dark:bg-zinc-800 text-sm font-medium capitalize">
                             {link.platform}
@@ -367,7 +367,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                           />
                         </div>
 
-                        <div className="space-y-2 w-28">
+                        <div className="w-full sm:w-28 space-y-2">
                           <Label>Followers</Label>
                           <Input
                             type="number"
@@ -435,7 +435,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                       Your Stats
                     </h2>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Total Followers - Auto-calculated */}
                       <div className="space-y-2">
                         <Label>Total Followers</Label>

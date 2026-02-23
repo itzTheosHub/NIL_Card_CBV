@@ -100,7 +100,7 @@ export default async function ProfilePage( {params}: { params: Promise<{ usernam
                         </div>
 
                         {/* University/School/College */}
-                        <div className="flex items-center justify-center gap-1.5 text-zinc-500 dark:text-zinc-300 mt-1">
+                        <div className="flex flex-wrap items-center justify-center gap-1.5 text-zinc-500 dark:text-zinc-300 mt-1">
                             <span>{profile.year_in_school}</span>
                             <span>•</span>
                             <span>{profile.sport}</span>
