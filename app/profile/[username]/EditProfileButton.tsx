@@ -27,9 +27,9 @@ export default function EditProfileButton({ profileId, username }: {profileId: s
     return (
         <Link
             href={`/profile/${username}/edit`}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 text-white font-semibold shadow-xl hover:shadow-xl transition-all shadow-violet-500/40 duration-300"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-md bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 text-white text-sm font-medium transition-all duration-300"
         >
-            <Pencil className="w-4 h-4 inline"/>
+            <Pencil className="w-4 h-4"/>
                 Edit Profile
         </Link>
     )

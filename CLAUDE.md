@@ -4,7 +4,7 @@ This file tracks project progress for continuity across Claude sessions.
 
 ---
 
-## Current Phase: 6 — Polish & Production
+## Current Phase: 7 — Mobile & Polish
 
 **Status:** In Progress
 
@@ -54,9 +54,9 @@ This file tracks project progress for continuity across Claude sessions.
 - [x] Cleaned up unused imports (Link, Image) after header/footer extraction
 - [x] Added responsive classes to landing page header buttons (sm: breakpoints, whitespace-nowrap)
 
-### Remaining
-- Responsive styling
-- Dark mode: class-based `dark:` variants need system preference detection (consider `next-themes`)
+### Remaining (Phase 6 → carried into Phase 7)
+- ~~Responsive styling~~ → Phase 7
+- ~~Dark mode system preference detection~~ → Phase 7 (`next-themes`)
 
 ### Profile Photo Upload — Status ✅ Complete
 - **Supabase Storage:** `profile-images` bucket created (public), RLS policies set (INSERT/UPDATE for authenticated, SELECT for public)
@@ -84,20 +84,66 @@ This file tracks project progress for continuity across Claude sessions.
 |-------|------|--------|
 | 0 | Scaffold & CI | ✅ Done |
 | 1 | Static UI | ✅ Done |
-| 2 | Data Model & Validation | ✅ Done (Supabase tables created) |
+| 2 | Data Model & Validation | ✅ Done |
 | 3 | Create Profile (POST) | ✅ Done |
 | 4 | Fetch Profile (GET) | ✅ Done |
 | 5 | Edit Profile (PATCH) | ✅ Done |
-| 6 | Polish & Production | 🟡 In Progress |
+| 6 | Polish & Production | ✅ Done |
+| 7 | Mobile & Polish | 🟡 In Progress |
+| 8 | Discoverability (`/athletes` directory) | ⬜ Planned |
+| 9 | Athlete Engagement Features | ⬜ Planned |
+| 10 | Brand Accounts | ⬜ Planned (future) |
 
 ### Phase 6 Notes
 - Verify domain with Resend and replace `onboarding@resend.dev` with custom sender
-- Add `RESEND_API_KEY` to Vercel environment variables
+- ~~Add `RESEND_API_KEY` to Vercel environment variables~~ ✅ Done
 - ~~Extract shared footer into `layout.tsx`~~ ✅ Done
 - ~~Extract shared header into `components/Header.tsx`~~ ✅ Done
 - Add `username`/`slug` column to profiles for cleaner URLs (e.g., `/profile/theo-colosimo` instead of UUID)
 - ~~Profile photo upload via Supabase Storage~~ ✅ Done
 - ~~Remove debug `console.log` statements~~ ✅ Done
+
+### Phase 7 — Mobile & Polish
+NIL Card profiles are shared via DM — primary viewing is on mobile. Most impactful fix for real-world usage.
+
+**Todo:**
+- [ ] Install `next-themes`, wrap app in `ThemeProvider` in `app/layout.tsx`
+- [ ] Add dark mode toggle to `components/Header.tsx`
+- [ ] Mobile audit + responsive fixes: `app/profile/[id]/page.tsx` (stat grid, social links, deliverables, contact button)
+- [ ] Mobile fixes: `app/page.tsx` (hero section, How It Works grid, CTA buttons)
+- [ ] Mobile fixes: `components/ProfileForm.tsx` (input fields, tag pills, deliverable buttons)
+
+**Key files:** `app/page.tsx`, `app/profile/[id]/page.tsx`, `components/ProfileForm.tsx`, `app/layout.tsx`, `components/Header.tsx`
+
+### Phase 8 — Discoverability (`/athletes` directory)
+Closes the biggest gap vs UGC Tank competitors. Without discovery, NIL Card is just a manually shared link.
+
+**Todo:**
+- [ ] New page: `app/athletes/page.tsx` — server component, fetches all profiles
+- [ ] Grid of athlete cards: photo/initials, name, sport, school, division, total followers
+- [ ] Each card links to `/profile/[username]`
+- [ ] Client-side filters: sport, division
+- [ ] Client-side search by name
+- [ ] Add directory CTA to landing page hero pointing to `/athletes`
+- [ ] DB: all data already exists in `profiles` table — no schema changes needed
+
+### Phase 9 — Athlete Engagement Features
+Give athletes more value beyond just sharing a link.
+
+**Todo:**
+1. **Availability toggle** — `is_available` column already in DB; add toggle to edit form + display badge on profile and directory cards
+2. **Profile view counter** — add `view_count` int column to `profiles` table; increment on server component load; display on athlete's own profile only
+3. **Contact request inbox** — store contact form submissions in a `contact_requests` table (profile_id, sender_email, subject, message, created_at); show count badge on edit profile button
+
+### Phase 10 — Brand Accounts (Future)
+Dual-sided marketplace like UGC Tank. Plan for it now, build later.
+
+**Schema to plan for:**
+- `brands` table: id, email, company_name, website, created_at
+- `opportunities` table: brand posts NIL deal briefs; athletes apply
+- Brand dashboard: browse athletes, save favorites, post opportunities
+- Match scoring: filter athletes by sport/division/follower range vs opportunity requirements
+- Separate brand signup/login flow
 
 ---
 
@@ -112,6 +158,16 @@ This file tracks project progress for continuity across Claude sessions.
 ---
 
 ## Session Log
+
+**2026-02-23 (continued)**
+- Conducted competitive analysis: NIL Card CBV vs UGC Tank (creator marketplace)
+- Identified biggest gap: no discovery — brands can't find athletes; must know URL directly
+- Defined Phase 7–10 roadmap (priority order):
+  - Phase 7: Mobile responsiveness + `next-themes` dark mode detection
+  - Phase 8: `/athletes` directory page with grid + filters + search
+  - Phase 9: Availability toggle, profile view counter, contact request inbox
+  - Phase 10: Brand accounts, opportunities table, dual-sided marketplace
+- Starting Phase 7 — installed `next-themes`
 
 **2026-02-23**
 - Debugged and fixed profile photo upload on edit page — three separate bugs:

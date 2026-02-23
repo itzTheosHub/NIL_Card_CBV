@@ -1,7 +1,14 @@
+"use client"
+
 import Link  from "next/link"
 import Image from "next/image"
+import { useTheme } from "next-themes"
+import { Sun, Moon } from "lucide-react"
 
 export default function Header({children}: {children?: React.ReactNode}){
+
+    const { resolvedTheme, setTheme } = useTheme()
+
     return (
         <header className="border-b border-zinc-200 bg-[rgb(252,253,255)] dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between px-6 py-2">
@@ -20,8 +27,15 @@ export default function Header({children}: {children?: React.ReactNode}){
                         height={120}
                         className="h-20 w-auto hidden dark:block"
                     />
-                    </Link>
-                        {children}
+                </Link>
+                <div className="flex items-center gap-3">
+                    <button
+                        className="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                        onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+                        {resolvedTheme === "dark" ? <Sun className="w-5 h-5"/> : <Moon className="w-5 h-5"/>}
+                    </button>
+                    {children}
+                </div>
             </div>
         </header>
                 
