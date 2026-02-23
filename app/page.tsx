@@ -22,7 +22,7 @@ export default function HomePage() {
       </Header>
           
           {/*Hero Section */}
-          <main className="flex flex-col items-center justify-center py-20 px-4 bg-gradient-to-b from-zinc-100 to-zinc-50 dark:from-zinc-900 dark:to-zinc-950">
+          <main className="flex flex-col items-center justify-center py-12 sm:py-20 px-4 bg-gradient-to-b from-zinc-100 to-zinc-50 dark:from-zinc-900 dark:to-zinc-950">
             <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-center">
               Your NIL Profile,
               <br/>
@@ -32,7 +32,7 @@ export default function HomePage() {
               Create a professional virtual NIL Card to showcase your social reach, 
               audience, and brand collaboration opportunities. Share it with one simple link.
             </p>
-            <div className="flex gap-4 mt-8">
+            <div className="flex flex-col items-center sm:flex-row gap-4 mt-8">
               <Link
                 href="/signup"
                 className="rounded-md bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 px-8 py-3 text-base font-medium text-white whitespace-nowrap"
