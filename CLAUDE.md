@@ -68,6 +68,9 @@ This file tracks project progress for continuity across Claude sessions.
 ### Future Ideas
 - **AI Outreach Assistant:** When athletes view their own profile, provide AI-generated suggestions for DMs and messages when reaching out to brands or sharing their profile link (tone, structure, personalization tips)
 - **Local Business Marketplace:** Search engine / directory for local brands, companies, and restaurants — athletes can discover nearby businesses to pitch partnerships to, and businesses can browse athlete profiles
+- **Platform API Integration (Stats Automation):** Connect to Instagram and TikTok APIs via OAuth to auto-calculate engagement rate (likes + comments / followers × 100) and avg views per post. Currently both fields are entered manually by athletes. Requires platform API approval and OAuth flows — significant complexity, defer to Phase 10+.
+- **Landing Page Redesign:** Current homepage is minimal. Redesign with a more detailed, polished layout — better hero section, social proof, feature highlights, two-pathway CTAs (For Athletes / For Brands). User will provide new layout direction when ready.
+- **User Type Selection (Athlete vs Brand):** On signup, ask "Are you an athlete or a brand/sponsor?" to route users into different onboarding flows. Athletes go to profile creation, brands go to a brand dashboard. This is the foundation for the dual-sided marketplace in Phase 10. Requires a `user_type` field on the auth user or a separate routing table, and separate signup flows/dashboards per type.
 
 ### Form ↔ DB alignment notes
 - Form `school` → DB `university`
@@ -167,7 +170,17 @@ Dual-sided marketplace like UGC Tank. Plan for it now, build later.
   - Phase 8: `/athletes` directory page with grid + filters + search
   - Phase 9: Availability toggle, profile view counter, contact request inbox
   - Phase 10: Brand accounts, opportunities table, dual-sided marketplace
-- Starting Phase 7 — installed `next-themes`
+- Completed Phase 7:
+  - Installed `next-themes`, wrapped app in ThemeProvider with system detection
+  - Added sun/moon toggle to Header, grouped right with children
+  - Added suppressHydrationWarning to html element
+  - Updated app metadata (title + description)
+  - Cleaned up EditProfileButton styling to match homepage buttons
+  - ProfileForm mobile fixes: social links row stacks on mobile, stats grid, school/sport grids
+  - Profile view page: bio line flex-wrap
+  - Landing page: CTA buttons stack on mobile, hero padding reduced, header logo responsive
+- Added future ideas: Platform API stats automation, landing page redesign, user type selection (athlete vs brand)
+- Signing off — next session starts Phase 8 (`/athletes` directory)
 
 **2026-02-23**
 - Debugged and fixed profile photo upload on edit page — three separate bugs:
