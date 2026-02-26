@@ -47,6 +47,27 @@ type EditProfileFormProps = {
 
 }
 
+type FeaturedPost = {
+  url: string;
+  platform: string,
+  caption: string
+}
+
+type Award = {
+  title: string;
+  description: string;
+}
+
+type Highlight = {
+  title: string;
+  description: string;
+}
+
+type PressArticle = {
+  url: string;
+  title: string;
+}
+
 // Format number to K/M notation
 function formatFollowers(num: number): string {
   if (num >= 1000000) {
@@ -100,6 +121,16 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Back of the card variables
+  const [showBackOfCard, setShowBackOfCard] = useState(false)
+  const [awards, setAwards] = useState<Award[]>([])
+  const [highlights, setHighlights] = useState<Highlight[]>([])
+  const [pressArticles, setPressArticles] = useState<PressArticle[]>([])
+  const [featuredPosts, setFeaturedPosts] = useState<FeaturedPost[]>([])
+
+  // Animation var
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
 
   // Toggle tag selection
@@ -191,9 +222,12 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              <Card className= "overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+              {!showBackOfCard && (
+              <Card className= {`overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border
+                dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300
+                 ${isTransitioning ? "animate-fade-slide-out" : ""}`}
+              >
                 <CardContent className="pt-6 space-y-6">
-
                   {/*ProfilePhotUrl Field*/}
                   <input 
                     className="hidden"
@@ -635,16 +669,228 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
 
                 </CardContent>
               </Card>
+              )}
 
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full font-semibold text-white bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 shadow-xl shadow-violet-500/40 hover:-translate-y-0.5 hover:scale-[1.02] transition-all duration-300"
-                size="lg"
-              >
-                {loading ? loadingLabel : submitLabel}
-              </Button>
+              {/* Skip or Submit Button */}
+
+              {!showBackOfCard ? (
+                
+                <div className="flex flex-col gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsTransitioning(true)
+                      setTimeout(() => {
+                        setShowBackOfCard(true)                                                                  
+                        setIsTransitioning(false)
+                      }, 400)
+                    }}
+                    className= "w-full rounded-md border border-zinc-300 text-zinc-700 dark:border-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300"
+                    size="lg"
+                  >
+                    Customize back of card 
+                  </Button>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
+                    Optional — skip this step and come back later
+                  </p>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 text-white font-semibold hover:-translate-y-0.5 hover:shadow-md transition-all duration-300"
+                    size="lg"
+                  >
+                    {loading ? loadingLabel : submitLabel}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-4 animate-fade-slide-in">
+                <Card className="overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80">
+                  <CardContent className="pt-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+                      Featured Posts
+                    </h2>
+                    {featuredPosts.map((post, index) => (
+                      <div key={index} className="flex flex-col gap-2">
+                        <Input
+                          placeholder="URL"
+                          value={post.url}
+                          onChange={(e) => {
+                            const updated = [...featuredPosts]
+                            updated[index].url = e.target.value
+                            setFeaturedPosts(updated)
+                          }} />
+                        <Input
+                          placeholder="Platform (e.g. Instagram)"
+                          value={post.platform}
+                          onChange={(e) => {
+                            const updated = [...featuredPosts]
+                            updated[index].platform = e.target.value
+                            setFeaturedPosts(updated)
+                          }} />
+                        <Input
+                          placeholder="Caption"
+                          value={post.caption}
+                          onChange={(e) => {
+                            const updated = [...featuredPosts]
+                            updated[index].caption = e.target.value
+                            setFeaturedPosts(updated)
+                          }} />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setFeaturedPosts(featuredPosts.filter((_, i) => i !== index))}
+                          className="text-zinc-500 hover:text-red-500 self-start">
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setFeaturedPosts([...featuredPosts, {url: "", platform: "", caption: ""}])}
+                    >
+                      + Add Featured Post
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card className="overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80">
+                  <CardContent className="pt-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+                      Awards
+                    </h2>
+                    {awards.map((award, index) => (
+                      <div key={index} className="flex flex-col gap-2">
+                        <Input
+                          placeholder="Title (e.g. All-Conference 2025)"
+                          value={award.title}
+                          onChange={(e) => {
+                            const updated = [...awards]
+                            updated[index].title = e.target.value
+                            setAwards(updated)
+                          }} />
+                        <Input
+                          placeholder="Description"
+                          value={award.description}
+                          onChange={(e) => {
+                            const updated = [...awards]
+                            updated[index].description = e.target.value
+                            setAwards(updated)
+                          }} />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setAwards(awards.filter((_, i) => i !== index))}
+                          className="text-zinc-500 hover:text-red-500 self-start">
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setAwards([...awards, { title: "", description: "" }])}>
+                      + Add Award
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80">
+                  <CardContent className="pt-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+                      Highlights
+                    </h2>
+                    {highlights.map((highlight, index) => (
+                      <div key={index} className="flex flex-col gap-2">
+                        <Input
+                          placeholder="Title (e.g. 1,000 career points)"
+                          value={highlight.title}
+                          onChange={(e) => {
+                            const updated = [...highlights]
+                            updated[index].title = e.target.value
+                            setHighlights(updated)
+                          }} />
+                        <Input
+                          placeholder="Description"
+                          value={highlight.description}
+                          onChange={(e) => {
+                            const updated = [...highlights]
+                            updated[index].description = e.target.value
+                            setHighlights(updated)
+                          }} />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setHighlights(highlights.filter((_, i) => i !== index))}
+                          className="text-zinc-500 hover:text-red-500 self-start">
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setHighlights([...highlights, { title: "", description: "" }])}>
+                      + Add Highlight
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card className="overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80">
+                  <CardContent className="pt-6 space-y-4">
+                    <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
+                      Articles
+                    </h2>
+                    {pressArticles.map((article, index) => (
+                      <div key={index} className="flex flex-col gap-2">
+                        <Input
+                          placeholder="Title (e.g. All-American Team)"
+                          value={article.title}
+                          onChange={(e) => {
+                            const updated = [...pressArticles]
+                            updated[index].title = e.target.value
+                            setPressArticles(updated)
+                          }} />
+                        <Input
+                          placeholder="url"
+                          value={article.url}
+                          onChange={(e) => {
+                            const updated = [...pressArticles]
+                            updated[index].url = e.target.value
+                            setPressArticles(updated)
+                          }} />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPressArticles(pressArticles.filter((_, i) => i !== index))}
+                          className="text-zinc-500 hover:text-red-500 self-start">
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setPressArticles([...pressArticles, { url : "", title: "" }])}>
+                      + Add Article
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full font-semibold text-white bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 transition-all duration-300"
+                  size="lg"
+                >
+                  {loading ? loadingLabel : submitLabel}
+                </Button>
+
+                </div>
+              )}
 
               {error && (
                 <p className="text-red-500 text-sm text-center">{error}</p>

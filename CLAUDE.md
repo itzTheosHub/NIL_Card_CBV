@@ -71,6 +71,13 @@ This file tracks project progress for continuity across Claude sessions.
 - **Platform API Integration (Stats Automation):** Connect to Instagram and TikTok APIs via OAuth to auto-calculate engagement rate (likes + comments / followers × 100) and avg views per post. Currently both fields are entered manually by athletes. Requires platform API approval and OAuth flows — significant complexity, defer to Phase 10+.
 - **Landing Page Redesign:** Current homepage is minimal. Redesign with a more detailed, polished layout — better hero section, social proof, feature highlights, two-pathway CTAs (For Athletes / For Brands). User will provide new layout direction when ready.
 - **User Type Selection (Athlete vs Brand):** On signup, ask "Are you an athlete or a brand/sponsor?" to route users into different onboarding flows. Athletes go to profile creation, brands go to a brand dashboard. This is the foundation for the dual-sided marketplace in Phase 10. Requires a `user_type` field on the auth user or a separate routing table, and separate signup flows/dashboards per type.
+- **Flippable Profile Card:** Profile card animates like a traditional business card flip (CSS 3D transform). Front side = current profile view (photo, name, stats, social links). Back side = deeper stats, featured/recent posts (linked from Instagram/TikTok), press articles or media mentions. Athlete manually links featured posts and articles. Platform API integration could automate recent posts in the future.
+- **Featured Posts & Media Links:** Athletes can add links to their best-performing posts or press articles on the back of their profile card. Requires a new `featured_posts` table (profile_id, url, platform, caption, created_at) and a new section in the edit form.
+- **Dual-Sided Marketplace (Athlete + Brand):** Defer until after Phase 9. Athletes browse and pitch to brands; brands post opportunities and browse athletes. Requires full brand accounts, opportunities table, and user type routing. (Already captured in Phase 10 plan.)
+- **Identity Verification:** Verify athletes and brands are who they claim to be. Options: university email verification (athlete signs up with .edu email), social media account linking (OAuth proves ownership of Instagram/TikTok handle), brand domain email verification. Adds trust signals to profiles — verified badge currently shown but not earned.
+- **Athlete-Side Local Business Search Engine:** Athletes can search for local businesses, restaurants, and brands near them by location. App surfaces match insights — e.g. "Your audience is 60% in Nashville — here are 10 Nashville-based brands that sponsor athletes." Includes AI-generated outreach suggestions for how to contact each brand. Requires location data on profiles and a business directory data source (Google Places API or manual curation).
+- **Stats Automation:** Replace manual engagement rate and avg views inputs with platform API pulls. Already documented under Platform API Integration above — consolidating here as a priority for post-Phase 10.
+- **Google OAuth for Brands:** When brand accounts are built (Phase 14), add Google OAuth sign-in for brands — businesses are more likely to use a Google/work account than create a new email/password. Athletes likely use regular email signup (or .edu verification), so Google OAuth may not be necessary on the athlete side.
 
 ### Form ↔ DB alignment notes
 - Form `school` → DB `university`
@@ -92,10 +99,17 @@ This file tracks project progress for continuity across Claude sessions.
 | 4 | Fetch Profile (GET) | ✅ Done |
 | 5 | Edit Profile (PATCH) | ✅ Done |
 | 6 | Polish & Production | ✅ Done |
-| 7 | Mobile & Polish | 🟡 In Progress |
-| 8 | Discoverability (`/athletes` directory) | ⬜ Planned |
+| 7 | Mobile & Polish | ✅ Done |
+| 8 | Discoverability (`/athletes` directory) | 🟡 In Progress |
 | 9 | Athlete Engagement Features | ⬜ Planned |
-| 10 | Brand Accounts | ⬜ Planned (future) |
+| 10 | Flippable Card + Featured Posts | 🟡 In Progress |
+| 11 | Identity Verification | ⬜ Planned |
+| 12 | Athlete Local Business Search | ⬜ Planned |
+| 13 | Stats Automation (Platform APIs) | ⬜ Planned |
+| 14 | Brand Accounts + Marketplace | ⬜ Planned (after athlete side complete) |
+| 15 | Landing Page Redesign | ⬜ Planned (after brand side) |
+
+> **Priority:** Complete all athlete-side features (Phases 8–13) before building brand/marketplace features. Goal is to grow the athlete user base first.
 
 ### Phase 6 Notes
 - Verify domain with Resend and replace `onboarding@resend.dev` with custom sender
@@ -161,6 +175,23 @@ Dual-sided marketplace like UGC Tank. Plan for it now, build later.
 ---
 
 ## Session Log
+
+**2026-02-25**
+- Phase 10 (Flippable Card + Featured Posts) — started, working on ProfileForm back of card
+- Created 4 new Supabase tables: `featured_posts`, `awards`, `highlights`, `press_articles` — all with RLS policies
+- Added 4 new types to ProfileForm: FeaturedPost, Award, Highlight, PressArticle
+- Added state variables for all 4 back of card sections
+- Built back of card UI sections in ProfileForm: Featured Posts, Awards, Highlights, Press Articles
+- Added "Customize back of card" / skip flow with two-button layout
+- Added `fadeSlideIn` (X direction) and `fadeSlideOut` animations to `globals.css`
+- Main form card slides out left, back of card sections slide in from right on click
+- `isTransitioning` state drives the exit animation, `setTimeout(400ms)` triggers the swap
+- Back of card is optional — athlete can skip and submit without filling it in
+- **Remaining for this phase:**
+  - Wire up `onSubmit` payload to include featuredPosts, awards, highlights, pressArticles
+  - Update create page to INSERT into the 4 new tables
+  - Update edit page to DELETE + reinsert into the 4 new tables
+  - Build back of card UI on profile view page (the actual flip animation)
 
 **2026-02-23 (continued)**
 - Conducted competitive analysis: NIL Card CBV vs UGC Tank (creator marketplace)
