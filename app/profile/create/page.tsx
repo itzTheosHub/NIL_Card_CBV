@@ -10,8 +10,20 @@ export default function CreateProfilePage() {
   const supabase = createClient()
   const router = useRouter()
 
-  const handleCreate = async (payload: {formData: any; socialLinks: any[]; tags: string[]; deliverables: string[]; profilePhotoFile?: File | null;}) => {
-    const { formData, socialLinks, tags, deliverables, profilePhotoFile} = payload
+  const handleCreate = async (payload: 
+    {
+      formData: any; 
+      socialLinks: any[]; 
+      tags: string[]; 
+      deliverables: string[]; 
+      profilePhotoFile?: File | null;
+      featuredPosts: any[];
+      awards: any[];
+      highlights: any[];
+      pressArticles: any[];
+
+    }) => {
+    const { formData, socialLinks, tags, deliverables, profilePhotoFile, featuredPosts, awards, highlights, pressArticles} = payload
     const { data: { user } } = await supabase.auth.getUser()
 
     
@@ -122,8 +134,82 @@ export default function CreateProfilePage() {
           return
 
         }
-        // Route to user's profile
+        if (featuredPosts.length > 0){
+          const {error : featuredPostsError} = await supabase.from("featured_posts").insert(
+            featuredPosts.map((post, index) => (
+              {
+              profile_id: user?.id,
+              url: post.url,
+              platform: post.platform,
+              caption: post.caption,
+              display_order: index
+            })))
+
+            if(featuredPostsError)
+            {
+              throw new Error(featuredPostsError.message)
+              return
+            }
+        }
+        
+        
+
+        if (awards.length > 0)
+        {
+          const {error : awardsError} = await supabase.from("awards").insert(
+            awards.map(award => (
+              {
+                profile_id: user?.id,
+                title: award.title,
+                description: award.description
+              }
+            )))
+
+          if (awardsError)
+          {
+            throw new Error(awardsError.message)
+            return
+          }
+        }
+
+        if (highlights.length > 0)
+        {
+          const {error : highlightsError} = await supabase.from("highlights").insert(
+            highlights.map(highlight => (
+              {
+                profile_id: user?.id,
+                title: highlight.title,
+                description: highlight.description
+              }
+            ))
+          )
+          if (highlightsError)
+          {
+            throw new Error(highlightsError.message)
+            return
+          }
+        }
+        
+        if(pressArticles.length > 0)
+        {
+          const {error: pressArticlesError} = await supabase.from("press_articles").insert(
+            pressArticles.map(article => (
+              {
+                profile_id: user?.id,
+                url: article.url,
+                title: article.title
+              }
+            ))
+          )
+          if (pressArticlesError)
+          {
+            throw new Error(pressArticlesError.message)
+            return
+          }
+        }
+        // Route to user's profile 
        router.push(`/profile/${formData.username}`)
+
       }
 
   }

@@ -30,6 +30,10 @@ export default function EditProfilePage() {
     const [initialSocialLinks, setInitialSocialLinks] = useState<{ platform: any; username: any; followers: any; }[] | undefined>(undefined)
     const [initialTags, setInitialTags] = useState<any[] | undefined>(undefined)
     const [initialDeliverables, setInitialDeliverables] = useState<any[] | undefined>(undefined)
+    const [initialFeaturedPosts, setInitialFeaturedPosts] = useState<any[] | undefined>(undefined)                                                                        
+    const [initialAwards, setInitialAwards] = useState<any[] | undefined>(undefined)
+    const [initialHighlights, setInitialHighlights] = useState<any[] | undefined>(undefined)     
+    const [initialPressArticles, setInitialPressArticles] = useState<any[] | undefined>(undefined)
 
     useEffect(() => {
         async function authData() {
@@ -45,6 +49,10 @@ export default function EditProfilePage() {
             const { data: socialLinks } = await supabase.from("social_links").select("*").eq("profile_id", profile.id)
             const { data: profileContentTags } = await supabase.from("profile_content_tags").select("tag_id, content_tags(name)").eq("profile_id", profile.id)
             const { data: deliverables } = await supabase.from("profile_deliverables").select("deliverable_id, deliverables(name)").eq("profile_id", profile.id)
+            const {data: awards} = await supabase.from("awards").select("*").eq("profile_id", profile.id)
+            const {data: featuredPosts} = await supabase.from("featured_posts").select("*").eq("profile_id", profile.id)
+            const {data: highlights} = await supabase.from("highlights").select("*").eq("profile_id", profile.id)
+            const {data: pressArticles} = await supabase.from("press_articles").select("*").eq("profile_id", profile.id)
 
             setInitialFormData({
                 fullName: profile?.full_name ?? "",
@@ -70,14 +78,46 @@ export default function EditProfilePage() {
             setInitialDeliverables(deliverables?.map(deliverable => (deliverable.deliverables as any)?.name) ?? [])
 
             setInitialTags(profileContentTags?.map(tag => (tag.content_tags as any)?.name) ?? [])
+
+            setInitialFeaturedPosts(featuredPosts?.map(post => ({
+              platform: post.platform,
+              url: post.url,
+              caption: post.caption,
+            })) ?? [])
+
+            setInitialAwards(awards?.map(award => ({
+              title: award.title,
+              description: award.description
+            })))
+
+            setInitialHighlights(highlights?.map(highlight => ({
+              title: highlight.title,
+              description: highlight.description
+            })))
+
+            setInitialPressArticles(pressArticles?.map(article => ({
+              url: article.url,
+              title: article.title
+            })))
+
             setLoading(false)
 
         }
         authData()
     }, [])
 
-    const handleEdit = async (payload: {formData: any; socialLinks: any[]; tags: string[]; deliverables: string[]; profilePhotoFile?: File | null;}) => {
-        const { formData, socialLinks, tags, deliverables, profilePhotoFile} = payload
+    const handleEdit = async (payload: {
+      formData: any; 
+      socialLinks: any[]; 
+      tags: string[]; 
+      deliverables: string[]; 
+      profilePhotoFile?: File | null;
+      featuredPosts: any[];
+      awards: any[];
+      highlights: any[];
+      pressArticles: any[];
+    }) => {
+        const { formData, socialLinks, tags, deliverables, profilePhotoFile, featuredPosts, awards, highlights, pressArticles } = payload
         const {data: { user }, error: userError,} = await supabase.auth.getUser()
 
         // Upload photo if new file selected
@@ -188,6 +228,88 @@ export default function EditProfilePage() {
           throw new Error(deliverableError.message)
         }
 
+        // Featured posts section
+        if (featuredPosts.length > 0){
+          await supabase.from("featured_posts").delete().eq("profile_id", profileId)
+          const {error : featuredPostsError} = await supabase.from("featured_posts").insert(
+            featuredPosts.map((post, index) => (
+              {
+              profile_id: user?.id,
+              url: post.url,
+              platform: post.platform,
+              caption: post.caption,
+              display_order: index
+            })))
+
+            if(featuredPostsError)
+            {
+              throw new Error(featuredPostsError.message)
+              return
+            }
+        }
+
+        // awards section
+        if (awards.length > 0)
+        {
+          await supabase.from("awards").delete().eq("profile_id", profileId)
+          const {error : awardsError} = await supabase.from("awards").insert(
+            awards.map(award => (
+              {
+                profile_id: user?.id,
+                title: award.title,
+                description: award.description
+              }
+            )))
+
+          if (awardsError)
+          {
+            throw new Error(awardsError.message)
+            return
+          }
+        }
+
+        // highlights section
+        if (highlights.length > 0)
+        {
+          await supabase.from("highlights").delete().eq("profile_id", profileId)
+          const {error : highlightsError} = await supabase.from("highlights").insert(
+            highlights.map(highlight => (
+              {
+                profile_id: user?.id,
+                title: highlight.title,
+                description: highlight.description
+              }
+            ))
+          )
+          if (highlightsError)
+          {
+            throw new Error(highlightsError.message)
+            return
+          }
+        }
+        
+        // press articles
+        if(pressArticles.length > 0)
+        {
+          await supabase.from("press_articles").delete().eq("profile_id", profileId)
+          const {error: pressArticlesError} = await supabase.from("press_articles").insert(
+            pressArticles.map(article => (
+              {
+                profile_id: user?.id,
+                url: article.url,
+                title: article.title
+              }
+            ))
+          )
+          if (pressArticlesError)
+          {
+            throw new Error(pressArticlesError.message)
+            return
+          }
+        }
+
+
+
         router.push(`/profile/${formData.username}`)
     }
     }
@@ -212,6 +334,10 @@ export default function EditProfilePage() {
             initialSocialLinks={initialSocialLinks}
             initialTags={initialTags}
             initialDeliverables={initialDeliverables}
+            initialFeaturedPosts={initialFeaturedPosts}
+            initialAwards={initialAwards}
+            initialHighlights={initialHighlights}
+            initialPressArticles={initialPressArticles}
             submitLabel="Save Changes"
             loadingLabel="Saving..."
             pageTitle="Edit Profile"

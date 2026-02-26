@@ -187,11 +187,13 @@ Dual-sided marketplace like UGC Tank. Plan for it now, build later.
 - Main form card slides out left, back of card sections slide in from right on click
 - `isTransitioning` state drives the exit animation, `setTimeout(400ms)` triggers the swap
 - Back of card is optional — athlete can skip and submit without filling it in
+- Wired up `onSubmit` payload to include featuredPosts, awards, highlights, pressArticles ✅
+- Updated create page to INSERT into all 4 new tables ✅
+- Updated edit page to DELETE + reinsert into all 4 new tables ✅
+- Edit page fetches existing back-of-card data in useEffect, passes as initial props to ProfileForm ✅
+- ProfileForm accepts and initializes state from 4 new initial props ✅
 - **Remaining for this phase:**
-  - Wire up `onSubmit` payload to include featuredPosts, awards, highlights, pressArticles
-  - Update create page to INSERT into the 4 new tables
-  - Update edit page to DELETE + reinsert into the 4 new tables
-  - Build back of card UI on profile view page (the actual flip animation)
+  - Build back of card UI on profile view page (`app/profile/[username]/page.tsx`) — fetch + display featured posts, awards, highlights, press articles
 
 **2026-02-23 (continued)**
 - Conducted competitive analysis: NIL Card CBV vs UGC Tank (creator marketplace)

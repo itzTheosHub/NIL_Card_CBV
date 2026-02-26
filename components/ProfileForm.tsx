@@ -39,7 +39,24 @@ type EditProfileFormProps = {
   initialSocialLinks?: SocialLink[]
   initialTags?: string[]
   initialDeliverables?: string[]
-  onSubmit: (payload: { formData: FormData; socialLinks: SocialLink[]; tags: string[]; deliverables: string[]; profilePhotoFile?: File | null;}) => Promise<void>
+  initialFeaturedPosts?: FeaturedPost[]
+  initialAwards?: Award[]
+  initialHighlights?: Highlight[]
+  initialPressArticles?: PressArticle[]
+
+  onSubmit: (payload: 
+              { formData: FormData; 
+                socialLinks: SocialLink[]; 
+                tags: string[]; 
+                deliverables: string[]; 
+                profilePhotoFile?: File | null;
+                featuredPosts: FeaturedPost[];
+                awards: Award[];
+                highlights: Highlight[];
+                pressArticles: PressArticle[];
+              }
+            ) => Promise<void>
+  
   submitLabel: string
   loadingLabel: string
   pageTitle: string
@@ -95,7 +112,7 @@ const availableDeliverables = [
 
 
 
-export default function EditProfilePage({initialFormData, initialSocialLinks, initialTags, initialDeliverables, onSubmit, submitLabel, loadingLabel, pageTitle, pageSubtitle}: EditProfileFormProps) {
+export default function EditProfilePage({initialFormData, initialSocialLinks, initialTags, initialDeliverables, initialFeaturedPosts, initialAwards, initialHighlights, initialPressArticles ,onSubmit, submitLabel, loadingLabel, pageTitle, pageSubtitle}: EditProfileFormProps) {
   const [formData, setFormData] = useState(initialFormData ??{
     fullName: "",
     bio: "",
@@ -124,10 +141,11 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
 
   // Back of the card variables
   const [showBackOfCard, setShowBackOfCard] = useState(false)
-  const [awards, setAwards] = useState<Award[]>([])
-  const [highlights, setHighlights] = useState<Highlight[]>([])
-  const [pressArticles, setPressArticles] = useState<PressArticle[]>([])
-  const [featuredPosts, setFeaturedPosts] = useState<FeaturedPost[]>([])
+  const [awards, setAwards] = useState<Award[]>(initialAwards ?? [])
+  const [highlights, setHighlights] = useState<Highlight[]>(initialHighlights ?? [])
+  const [pressArticles, setPressArticles] = useState<PressArticle[]>(initialPressArticles ?? [])
+  const [featuredPosts, setFeaturedPosts] = useState<FeaturedPost[]>(initialFeaturedPosts ?? [])
+
 
   // Animation var
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -192,7 +210,16 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
     setLoading(true)
     try
     {
-        await onSubmit({ formData, socialLinks, tags: selectedTags, deliverables: selectedDeliverables, profilePhotoFile: profilePhotoFile})
+        await onSubmit({ formData, 
+                          socialLinks, 
+                          tags: selectedTags, 
+                          deliverables: selectedDeliverables, 
+                          profilePhotoFile: profilePhotoFile, 
+                          featuredPosts, 
+                          awards, 
+                          highlights,
+                          pressArticles
+                        })
     } catch (err:any) {
         setError(err.message)
     }
@@ -705,6 +732,13 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                 </div>
               ) : (
                 <div className="space-y-4 animate-fade-slide-in">
+                  <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowBackOfCard(false)}
+                >
+                  ← Back to Profile
+                </Button>
                 <Card className="overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80">
                   <CardContent className="pt-6 space-y-4">
                     <h2 className="text-lg font-semibold text-zinc-800 dark:text-zinc-200">
@@ -883,7 +917,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full font-semibold text-white bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-violet-600 to-blue-500 hover:from-violet-700 hover:to-blue-600 text-white font-semibold hover:-translate-y-0.5 hover:shadow-md transition-all duration-300"
                   size="lg"
                 >
                   {loading ? loadingLabel : submitLabel}
