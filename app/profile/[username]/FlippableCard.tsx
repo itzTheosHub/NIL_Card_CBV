@@ -43,20 +43,6 @@ type Props = {
 export default function FlippableCard({ profile, socialLinks, profileContentTags, deliverables, featuredPosts, awards, highlights, pressArticles }: Props) {
     const [isFlipped, setIsFlipped] = useState(false)
 
-     useEffect(() => {                                                           
-      if ((window as any).tiktokEmbed) {
-          (window as any).tiktokEmbed.lib.render()
-      } else {
-          const script = document.createElement("script")
-          script.src = "https://www.tiktok.com/embed.js"
-          script.async = true
-          document.body.appendChild(script)
-      }
-    }, [])
-
-    console.log(featuredPosts)
-
-
     const formattedEngagement = formatEngagement(profile.engagement_rate)
     const formattedTotalFollowers = formatNumber(profile.total_followers)
     const formattedAvgViews = formatNumber(profile.avg_views)
@@ -66,7 +52,10 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
             <div className={`relative transition-transform duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
 
                 {/* Front Face */}
-                <div className="[backface-visibility:hidden]">
+                <div 
+                    className="[backface-visibility:hidden]"
+                    style={{WebkitBackfaceVisibility: "hidden"}}
+                >
                     <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                         {/* Flip Button */}
                         <button
@@ -279,7 +268,10 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                 </div>
 
                 {/* Back Face */}
-                <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                <div 
+                    className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]"
+                    style={{WebkitBackfaceVisibility: "hidden"}}
+                >
                     <div className="relative overflow-y-auto rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 h-full">
                         <button
                             onClick={() => setIsFlipped(false)}
@@ -301,7 +293,6 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                                     <span className="text-lg font-bold text-zinc-700 dark:text-zinc-300 whitespace-nowrap">
                                         Featured Content
                                     </span>
-                                    <div className="flex-1 h-[1px] bg-gradient-to-r from-purple-500/60 via-purple-400/40 to-transparent"/>
                                 </div>
                                 <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                                     {featuredPosts.map((post) => {
