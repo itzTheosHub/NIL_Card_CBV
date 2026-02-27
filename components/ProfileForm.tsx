@@ -754,14 +754,16 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                             updated[index].url = e.target.value
                             setFeaturedPosts(updated)
                           }} />
-                        <Input
-                          placeholder="Platform (e.g. Instagram)"
+                        <select
+                          className="w-full h-9 px-3 rounded-md border border-input bg-transparent text-foreground dark:bg-input/30 text-s"
                           value={post.platform}
                           onChange={(e) => {
                             const updated = [...featuredPosts]
                             updated[index].platform = e.target.value
                             setFeaturedPosts(updated)
-                          }} />
+                          }}>
+                          <option value="tiktok">TikTok</option>
+                        </select>
                         <Input
                           placeholder="Caption"
                           value={post.caption}
@@ -783,7 +785,7 @@ export default function EditProfilePage({initialFormData, initialSocialLinks, in
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => setFeaturedPosts([...featuredPosts, {url: "", platform: "", caption: ""}])}
+                      onClick={() => setFeaturedPosts([...featuredPosts, {url: "", platform: "tiktok", caption: ""}])}
                     >
                       + Add Featured Post
                     </Button>

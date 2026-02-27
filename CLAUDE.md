@@ -66,6 +66,7 @@ This file tracks project progress for continuity across Claude sessions.
 - **Edit page:** fully working after three bugs fixed (see session log 2026-02-23)
 
 ### Future Ideas
+- **Profile View Redesign (Business Card Style):** Current profile view is a long scrolling page — could get very long on mobile once back-of-card content (featured posts, awards, highlights, press articles) is added. Consider redesigning to a compact business card layout: fixed-height card that fits the screen, front/back flip animation (CSS 3D transform), front = photo + name + stats + social links, back = featured posts + awards + press. Keeps mobile experience tight and avoids scroll fatigue. Priority: after back-of-card data is wired up and displayed.
 - **AI Outreach Assistant:** When athletes view their own profile, provide AI-generated suggestions for DMs and messages when reaching out to brands or sharing their profile link (tone, structure, personalization tips)
 - **Local Business Marketplace:** Search engine / directory for local brands, companies, and restaurants — athletes can discover nearby businesses to pitch partnerships to, and businesses can browse athlete profiles
 - **Platform API Integration (Stats Automation):** Connect to Instagram and TikTok APIs via OAuth to auto-calculate engagement rate (likes + comments / followers × 100) and avg views per post. Currently both fields are entered manually by athletes. Requires platform API approval and OAuth flows — significant complexity, defer to Phase 10+.
@@ -175,6 +176,28 @@ Dual-sided marketplace like UGC Tank. Plan for it now, build later.
 ---
 
 ## Session Log
+
+**2026-02-26**
+- Profile view page UI redesign — moving toward circular profile card design (inspired by Figma mockups)
+- Reviewed Figma concepts: bleed photo design vs circular photo design — chose circular as more practical for real athlete photos
+- Removed gradient cover band (`h-32`) from profile view page, replaced `-mt-16` overlap with `pt-8`
+- Consolidated 3 separate cards (profile, about, deliverables) into one unified card with section dividers
+- Removed `border-t` dividers between sections — replaced with padding-only spacing (cleaner)
+- Added fading gradient lines (`from-purple-500/60 via-purple-400/40 to-transparent`) next to section headings (Social Channels, About, Partnership Deliverables)
+- Standardized section heading styles: `text-base font-semibold text-zinc-700 dark:text-zinc-300`
+- Changed info lines under athlete name to faint violet (dark) / zinc-600 (light) with centered fading lines on both sides using `max-w-[40px] flex-1`
+- Moved `BadgeCheck` verified icon from next to name → bottom-right of profile photo (overlaid), replacing green availability dot
+- Athlete name bumped to `text-3xl font-bold tracking-wide`
+- Experimented with Bebas Neue and DM Mono fonts — reverted, keeping Geist
+- Added flip button (RotateCcw icon) to top-right of card: `absolute top-4 right-4`, glassmorphism style, `group-hover:rotate-180` animation on icon
+- Fixed typo in transition class: `transition-transfrom` → `transition-transform`
+- **Remaining for this session / next steps:**
+  - Fix typo `transition-transfrom duration-400` → `transition-transform duration-300` on RotateCcw icon (line 73)
+  - Build `FlippableCard.tsx` as a `"use client"` component
+  - Move card JSX into FlippableCard, add `isFlipped` useState
+  - Implement CSS 3D flip: `[perspective:1000px]` wrapper, `[transform-style:preserve-3d]` inner, `[backface-visibility:hidden]` on both faces
+  - Back face: display awards, highlights, featured posts, press articles (data already fetched in page.tsx)
+  - Pass all profile data as props from page.tsx to FlippableCard
 
 **2026-02-25**
 - Phase 10 (Flippable Card + Featured Posts) — started, working on ProfileForm back of card

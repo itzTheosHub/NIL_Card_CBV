@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export const metadata: Metadata = {
   title: "NIL Card - Virtual Sponsorship Profiles",
   description: "Create your NIL profile card. Share your stats, social reach, and partnership opportunities with brands and sponsors.",
