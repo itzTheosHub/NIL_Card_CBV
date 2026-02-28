@@ -56,7 +56,7 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                     className="[backface-visibility:hidden]"
                     style={{WebkitBackfaceVisibility: "hidden"}}
                 >
-                    <div className="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                    <div className="relative overflow-hidden rounded-2xl bg-white backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                         {/* Flip Button */}
                         <button
                             onClick={() => setIsFlipped(true)}
@@ -272,7 +272,7 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                     className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]"
                     style={{WebkitBackfaceVisibility: "hidden"}}
                 >
-                    <div className="relative overflow-y-auto rounded-2xl bg-white/80 backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900/80 h-full">
+                    <div className="relative overflow-y-auto rounded-2xl bg-white backdrop-blur-sm shadow-lg dark:border dark:border-zinc-700 dark:bg-zinc-900 h-full">
                         <button
                             onClick={() => setIsFlipped(false)}
                             className="group rounded-full absolute top-4 right-4 px-2 py-1 flex items-center gap-2 justify-center bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 active:bg-white/30 transition-colors"
