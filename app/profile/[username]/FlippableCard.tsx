@@ -329,14 +329,14 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                                         {awards.map((award) => (
                                             <div
                                                 key={award.id}
-                                                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-purple-50 hover:border-purple-200 transition-colors dark:hover:bg-purple-900/20 dark:bg-zinc-800 dark:border-zinc-700"
+                                                className="flex items-center gap-3 p-3 rounded-lg border bg-amber-50 dark:bg-amber-900/10 border-amber-100 dark:border-zinc-700 hover:border-amber-200 transition-colors"
                                             >
                                                 <Star className="w-5 h-5 text-yellow-600 shrink-0" />
                                                 <div className="flex flex-col gap-0.5">
                                                     <span className="text-gray-700 font-medium dark:text-zinc-300">
                                                         {award.title}
                                                     </span>
-                                                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                                    <span className="text-xs text-zinc-500 line-clamp-2 dark:text-zinc-400">
                                                         {award.description}
                                                     </span>
                                                 </div>
@@ -363,7 +363,7 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                                                 href={article.url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-purple-50 hover:border-purple-200 transition-colors dark:hover:bg-purple-900/20 dark:bg-zinc-800 dark:border-zinc-700"
+                                                className="flex items-center gap-3 p-3 rounded-lg border bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-zinc-700 hover:border-blue-200 transition-colors"
                                             >
                                                 <span className="text-gray-700 font-medium dark:text-zinc-300 flex-1">
                                                     {article.title}
@@ -388,7 +388,7 @@ export default function FlippableCard({ profile, socialLinks, profileContentTags
                                         {highlights.map((highlight) => (
                                             <div
                                                 key={highlight.id}
-                                                className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 bg-purple-50 hover:border-purple-200 transition-colors dark:hover:bg-purple-900/20 dark:bg-zinc-800 dark:border-zinc-700"
+                                                className="flex items-center gap-3 p-3 rounded-lg border bg-green-50 dark:bg-green-900/10 border-green-100 dark:border-zinc-700 hover:border-green-200 transition-colors"
                                             >
                                                 <span className="text-gray-700 font-medium dark:text-zinc-300 flex-1">
                                                     {highlight.title}
